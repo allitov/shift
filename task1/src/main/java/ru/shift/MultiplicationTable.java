@@ -17,7 +17,7 @@ public class MultiplicationTable {
         System.out.println();
         System.out.println(rowDivider);
 
-        for (int i = 0; i <= size; i++) {
+        for (int i = 1; i <= size; i++) {
             System.out.printf(firstCellFormat, i);
             for (int j = 1; j <= size; j++) {
                 System.out.printf(cellFormat, i * j);
