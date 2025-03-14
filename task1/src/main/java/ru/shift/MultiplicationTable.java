@@ -11,19 +11,17 @@ public class MultiplicationTable {
         String rowDivider = buildRowDivider(firstCellWidth, cellWidth, size);
 
         System.out.printf(firstCellFormat, "");
-        for (int i = 1; i <= size; i++) {
-            System.out.printf(cellFormat, i);
+        for (int col = 1; col <= size; col++) {
+            System.out.printf(cellFormat, col);
         }
-        System.out.println();
-        System.out.println(rowDivider);
+        System.out.println("\n" + rowDivider);
 
-        for (int i = 1; i <= size; i++) {
-            System.out.printf(firstCellFormat, i);
-            for (int j = 1; j <= size; j++) {
-                System.out.printf(cellFormat, i * j);
+        for (int row = 1; row <= size; row++) {
+            System.out.printf(firstCellFormat, row);
+            for (int col = 1; col <= size; col++) {
+                System.out.printf(cellFormat, row * col);
             }
-            System.out.println();
-            System.out.println(rowDivider);
+            System.out.println("\n" + rowDivider);
         }
     }
 
