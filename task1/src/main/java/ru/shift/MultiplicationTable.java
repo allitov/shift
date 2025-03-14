@@ -3,11 +3,11 @@ package ru.shift;
 public class MultiplicationTable {
 
     public void printTable(int size) {
-        int cellWidth = calculateCellWidth(size * size);
         int firstCellWidth = calculateCellWidth(size);
+        int cellWidth = calculateCellWidth(size * size);
 
-        String cellFormat = "%" + cellWidth + "s|";
-        String firstCellFormat = "%" + firstCellWidth + "s|";
+        String firstCellFormat = "%" + firstCellWidth + "s";
+        String cellFormat = "|%" + cellWidth + "s";
         String rowDivider = buildRowDivider(firstCellWidth, cellWidth, size);
 
         System.out.printf(firstCellFormat, "");
@@ -37,10 +37,10 @@ public class MultiplicationTable {
 
     private String buildRowDivider(int firstCellWidth, int cellWidth, int size) {
         StringBuilder rowDivider = new StringBuilder();
-        rowDivider.append("-".repeat(firstCellWidth)).append("+");
+        rowDivider.append("-".repeat(firstCellWidth));
         String cellFloor = "-".repeat(cellWidth);
         for (int i = 0; i < size; i++) {
-            rowDivider.append(cellFloor).append("+");
+            rowDivider.append("+").append(cellFloor);
         }
 
         return rowDivider.toString();
