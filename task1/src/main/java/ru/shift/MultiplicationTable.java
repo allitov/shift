@@ -8,7 +8,7 @@ public class MultiplicationTable {
 
         String cellFormat = "%" + cellWidth + "s|";
         String firstCellFormat = "%" + firstCellWidth + "s|";
-        String rowDivider = "-".repeat(firstCellWidth) + "+" + ("-".repeat(cellWidth) + "+").repeat(size);
+        String rowDivider = buildRowDivider(firstCellWidth, cellWidth, size);
 
         System.out.printf(firstCellFormat, "");
         for (int i = 1; i <= size; i++) {
@@ -35,5 +35,16 @@ public class MultiplicationTable {
         }
 
         return cellWidth;
+    }
+
+    private String buildRowDivider(int firstCellWidth, int cellWidth, int size) {
+        StringBuilder rowDivider = new StringBuilder();
+        rowDivider.append("-".repeat(firstCellWidth)).append("+");
+        String cellFloor = "-".repeat(cellWidth);
+        for (int i = 0; i < size; i++) {
+            rowDivider.append(cellFloor).append("+");
+        }
+
+        return rowDivider.toString();
     }
 }
