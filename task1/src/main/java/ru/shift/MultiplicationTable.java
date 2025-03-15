@@ -15,20 +15,25 @@ public class MultiplicationTable {
     }
 
     private void printHeader(int size, String firstCellFormat, String cellFormat, String rowDivider) {
-        System.out.printf(firstCellFormat, "");
+        StringBuilder builder = new StringBuilder();
+        builder.append(String.format(firstCellFormat, ""));
         for (int col = 1; col <= size; col++) {
-            System.out.printf(cellFormat, col);
+            builder.append(String.format(cellFormat, col));
         }
-        System.out.println("\n" + rowDivider);
+        builder.append("\n").append(rowDivider);
+        System.out.println(builder);
     }
 
     private void printBody(int size, String firstCellFormat, String cellFormat, String rowDivider) {
+        StringBuilder builder = new StringBuilder();
         for (int row = 1; row <= size; row++) {
-            System.out.printf(firstCellFormat, row);
+            builder.append(String.format(firstCellFormat, row));
             for (int col = 1; col <= size; col++) {
-                System.out.printf(cellFormat, row * col);
+                builder.append(String.format(cellFormat, row * col));
             }
-            System.out.println("\n" + rowDivider);
+            builder.append("\n").append(rowDivider);
+            System.out.println(builder);
+            builder.setLength(0);
         }
     }
 
