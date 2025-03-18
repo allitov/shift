@@ -1,23 +1,22 @@
 package ru.shift;
 
-import java.util.InputMismatchException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
-        int size = 0;
-        try (Scanner scanner = new Scanner(System.in)) {
-            System.out.print("Enter a size of a multiplication table (int from 1 to 32): ");
-            size = scanner.nextInt();
-            if (size < 1 || size > 32) {
-                throw new InputMismatchException();
-            }
-        } catch (InputMismatchException e) {
-            System.err.println("Illegal input format");
-            System.exit(0);
-        }
 
-        MultiplicationTable mt = new MultiplicationTable();
-        mt.printTable(size);
+    private static final InputStream DEFAULT_INPUT_STREAM = System.in;
+    private static final OutputStream DEFAULT_OUTPUT_STREAM = System.out;
+
+    public static void main(String[] args) {
+        try (PrintWriter writer = new PrintWriter(DEFAULT_OUTPUT_STREAM);
+             Scanner scanner = new Scanner(DEFAULT_INPUT_STREAM)) {
+            SizeReader sizeReader = new SizeReader(scanner, writer);
+            int size = sizeReader.readSize();
+            MultiplicationTable mt = new MultiplicationTable(writer);
+            mt.printTable(size);
+        }
     }
 }

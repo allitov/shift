@@ -1,6 +1,14 @@
 package ru.shift;
 
+import java.io.PrintWriter;
+
 public class MultiplicationTable {
+
+    private final PrintWriter writer;
+
+    public MultiplicationTable(PrintWriter writer) {
+        this.writer = writer;
+    }
 
     public void printTable(int size) {
         int firstCellWidth = calculateCellWidth(size);
@@ -21,7 +29,8 @@ public class MultiplicationTable {
             builder.append(String.format(cellFormat, col));
         }
         builder.append("\n").append(rowDivider);
-        System.out.println(builder);
+        writer.println(builder);
+        writer.flush();
     }
 
     private void printBody(int size, String firstCellFormat, String cellFormat, String rowDivider) {
@@ -32,7 +41,8 @@ public class MultiplicationTable {
                 builder.append(String.format(cellFormat, row * col));
             }
             builder.append("\n").append(rowDivider);
-            System.out.println(builder);
+            writer.println(builder);
+            writer.flush();
             builder.setLength(0);
         }
     }
