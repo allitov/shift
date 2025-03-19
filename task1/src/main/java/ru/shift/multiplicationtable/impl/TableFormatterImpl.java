@@ -26,9 +26,10 @@ public class TableFormatterImpl implements TableFormatter {
     public String getDividerFormat(int size) {
         int firstCellWidth = calculateCellWidth(size);
         int cellWidth = calculateCellWidth(size * size);
-        StringBuilder rowDivider = new StringBuilder();
-        rowDivider.append(CELL_FLOOR.repeat(firstCellWidth));
+        int dividerSize = firstCellWidth + (cellWidth + 1) * size;
+        StringBuilder rowDivider = new StringBuilder(dividerSize);
         String cellFloor = CELL_FLOOR.repeat(cellWidth);
+        rowDivider.append(CELL_FLOOR.repeat(firstCellWidth));
         for (int i = 0; i < size; i++) {
             rowDivider.append(DIVIDER_COLUMN_SEPARATOR).append(cellFloor);
         }
