@@ -1,6 +1,7 @@
 package ru.shift;
 
 import ru.shift.multiplicationtable.MultiplicationTable;
+import ru.shift.multiplicationtable.SizeReader;
 
 import java.io.InputStream;
 import java.io.OutputStream;

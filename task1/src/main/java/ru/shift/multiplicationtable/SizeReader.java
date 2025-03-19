@@ -1,4 +1,4 @@
-package ru.shift;
+package ru.shift.multiplicationtable;
 
 import java.io.PrintWriter;
 import java.util.InputMismatchException;
