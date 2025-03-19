@@ -1,5 +1,7 @@
 package ru.shift;
 
+import ru.shift.multiplicationtable.MultiplicationTable;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -15,8 +17,8 @@ public class Main {
              Scanner scanner = new Scanner(DEFAULT_INPUT_STREAM)) {
             SizeReader sizeReader = new SizeReader(scanner, writer);
             int size = sizeReader.readSize();
-            MultiplicationTable mt = new MultiplicationTable(writer);
-            mt.printTable(size);
+            MultiplicationTable multiplicationTable = new MultiplicationTable(writer);
+            multiplicationTable.print(size);
         }
     }
 }
