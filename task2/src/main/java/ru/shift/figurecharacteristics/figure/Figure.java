@@ -1,4 +1,6 @@
-package ru.shift;
+package ru.shift.figurecharacteristics.figure;
+
+import ru.shift.figurecharacteristics.input.FigureData;
 
 import java.util.Objects;
 

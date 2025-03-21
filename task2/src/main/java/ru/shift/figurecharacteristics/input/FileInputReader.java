@@ -1,4 +1,6 @@
-package ru.shift;
+package ru.shift.figurecharacteristics.input;
+
+import ru.shift.figurecharacteristics.figure.FigureType;
 
 import java.io.BufferedReader;
 import java.io.File;

@@ -1,4 +1,4 @@
-package ru.shift;
+package ru.shift.figurecharacteristics.input;
 
 public interface InputReader {
 
