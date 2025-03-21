@@ -10,9 +10,9 @@ public final class FigureFactory {
 
     public static Figure createFigure(FigureData data) {
         return switch (data.getType()) {
-            case CIRCLE -> new Circle(data);
-            case RECTANGLE -> new Rectangle(data);
-            case TRIANGLE -> new Triangle(data);
+            case CIRCLE -> new Circle(data.getParams());
+            case RECTANGLE -> new Rectangle(data.getParams());
+            case TRIANGLE -> new Triangle(data.getParams());
         };
     }
 }

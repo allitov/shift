@@ -1,15 +1,13 @@
 package ru.shift.figurecharacteristics.figure;
 
-import ru.shift.figurecharacteristics.input.FigureData;
-
 public class Circle extends Figure {
 
     private final double radius;
     private final double diameter;
 
-    public Circle(FigureData data) {
-        super(data);
-        this.radius = data.getParams()[0];
+    public Circle(double[] params) {
+        super(FigureType.CIRCLE, params);
+        this.radius = params[0];
         this.diameter = radius * 2;
     }
 

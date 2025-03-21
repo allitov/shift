@@ -1,7 +1,5 @@
 package ru.shift.figurecharacteristics.figure;
 
-import ru.shift.figurecharacteristics.input.FigureData;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,9 +8,9 @@ public class Triangle extends Figure {
 
     private final Map<Double, Double> sideToAngle;
 
-    public Triangle(FigureData data) {
-        super(data);
-        sideToAngle = calculateSideToAngle(data.getParams());
+    public Triangle(double[] params) {
+        super(FigureType.TRIANGLE, params);
+        sideToAngle = calculateSideToAngle(params);
     }
 
     @Override

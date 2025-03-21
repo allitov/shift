@@ -1,16 +1,13 @@
 package ru.shift.figurecharacteristics.figure;
 
-import ru.shift.figurecharacteristics.input.FigureData;
-
 public class Rectangle extends Figure {
 
     private final double diagonal;
     private final double length;
     private final double width;
 
-    public Rectangle(FigureData data) {
-        super(data);
-        double[] params = data.getParams();
+    public Rectangle(double[] params) {
+        super(FigureType.RECTANGLE, params);
         this.diagonal = calculateDiagonal(params);
         this.length = Math.max(params[0], params[1]);
         this.width = Math.min(params[0], params[1]);

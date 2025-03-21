@@ -1,7 +1,5 @@
 package ru.shift.figurecharacteristics.figure;
 
-import ru.shift.figurecharacteristics.input.FigureData;
-
 import java.util.Objects;
 
 public abstract class Figure {
@@ -10,14 +8,14 @@ public abstract class Figure {
     private final double area;
     private final double perimeter;
 
-    public Figure(FigureData data) {
-        Objects.requireNonNull(data);
-        double[] params = data.getParams();
+    public Figure(FigureType type, double[] params) {
+        Objects.requireNonNull(type);
+        Objects.requireNonNull(params);
         if (!areParamsValid(params)) {
             System.err.println("Invalid parameters for " + getClass().getSimpleName());
             throw new IllegalArgumentException();
         }
-        this.type = data.getType();
+        this.type = type;
         this.area = calculateArea(params);
         this.perimeter = calculatePerimeter(params);
     }
