@@ -2,7 +2,18 @@ package ru.shift;
 
 public enum FigureType {
 
-    CIRCLE,
-    RECTANGLE,
-    TRIANGLE,
+    CIRCLE("Круг"),
+    RECTANGLE("Прямоугольник"),
+    TRIANGLE("Треугольник");
+
+    private final String name;
+
+    FigureType(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }
