@@ -1,4 +1,4 @@
-package ru.shift.figurecharacteristics.figure;
+package ru.shift.figurecharacteristics.figure.entity;
 
 public enum FigureType {
 

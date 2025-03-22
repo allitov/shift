@@ -1,13 +1,12 @@
 package ru.shift.figurecharacteristics.input;
 
-import ru.shift.figurecharacteristics.figure.FigureType;
+import ru.shift.figurecharacteristics.figure.entity.FigureType;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
 
 public class FileInputReader implements InputReader {
 
@@ -23,8 +22,7 @@ public class FileInputReader implements InputReader {
     public FigureData getInputData() {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             FigureType type = FigureType.valueOf(reader.readLine());
-            double[] params = Arrays.stream(reader.readLine().split(PARAMS_DELIMITER))
-                    .mapToDouble(Double::parseDouble).toArray();
+            String[] params = reader.readLine().split(PARAMS_DELIMITER);
             return new FigureData(type, params);
         } catch (FileNotFoundException e) {
             System.err.println("File not found: " + file.getAbsolutePath());
