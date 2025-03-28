@@ -5,57 +5,35 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CircleTest {
 
-    @DisplayName("Test circle factory creation")
+    @DisplayName("Test circle name initialization")
     @Test
-    void testCircleFactoryCreation() throws IOException {
-        BufferedReader reader = new BufferedReader(new StringReader("5"));
+    void testCircleNameInitialization() {
+        Circle circle = new Circle(5);
 
-        Circle circle = Circle.readCircle(reader);
-
-        assertInstanceOf(Circle.class, circle);
+        assertEquals("Круг", circle.getName());
     }
 
     @DisplayName("Test circle radius calculation")
     @ParameterizedTest(name = "[{index}] - circle with radius {0}")
     @ValueSource(doubles = {5, 10})
-    void testCircleRadiusCalculation(double radius) throws IOException {
-        String line = String.valueOf(radius);
-        BufferedReader reader = new BufferedReader(new StringReader(line));
-
-        Circle circle = Circle.readCircle(reader);
+    void testCircleRadiusCalculation(double radius) {
+        Circle circle = new Circle(radius);
 
         assertEquals(radius, circle.getRadius());
-    }
-
-    @DisplayName("Test circle name initialization")
-    @Test
-    void testCircleNameInitialization() throws IOException {
-        BufferedReader reader = new BufferedReader(new StringReader("5"));
-
-        Circle circle = Circle.readCircle(reader);
-
-        assertEquals("Круг", circle.getName());
     }
 
     @DisplayName("Test circle diameter calculation")
     @ParameterizedTest(name = "[{index}] - circle with radius {0}")
     @ValueSource(doubles = {5, 10})
-    void testCircleDiameterCalculation(double radius) throws IOException {
+    void testCircleDiameterCalculation(double radius) {
         double diameter = calculateDiameter(radius);
-        String line = String.valueOf(radius);
-        BufferedReader reader = new BufferedReader(new StringReader(line));
 
-        Circle circle = Circle.readCircle(reader);
+        Circle circle = new Circle(radius);
 
         assertEquals(diameter, circle.getDiameter());
     }
@@ -63,12 +41,10 @@ class CircleTest {
     @DisplayName("Test circle area calculation")
     @ParameterizedTest(name = "[{index}] - circle with radius {0}")
     @ValueSource(doubles = {5, 10})
-    void testCircleAreaCalculation(double radius) throws IOException {
+    void testCircleAreaCalculation(double radius) {
         double area = calculateArea(radius);
-        String line = String.valueOf(radius);
-        BufferedReader reader = new BufferedReader(new StringReader(line));
 
-        Circle circle = Circle.readCircle(reader);
+        Circle circle = new Circle(radius);
 
         assertEquals(area, circle.getArea());
     }
@@ -76,33 +52,19 @@ class CircleTest {
     @DisplayName("Test circle perimeter calculation")
     @ParameterizedTest(name = "[{index}] - circle with radius {0}")
     @ValueSource(doubles = {5, 10})
-    void testCirclePerimeterCalculation(double radius) throws IOException {
+    void testCirclePerimeterCalculation(double radius) {
         double perimeter = calculatePerimeter(radius);
-        String line = String.valueOf(radius);
-        BufferedReader reader = new BufferedReader(new StringReader(line));
 
-        Circle circle = Circle.readCircle(reader);
+        Circle circle = new Circle(radius);
 
         assertEquals(perimeter, circle.getPerimeter());
-    }
-
-    @DisplayName("Test circle input line validation")
-    @ParameterizedTest(name = "[{index}] - validate line \"{0}\"")
-    @ValueSource(strings = {"-b", "red", "1.2c34", "5 120"})
-    void testCircleInputLineValidation(String line) {
-        BufferedReader reader = new BufferedReader(new StringReader(line));
-
-        assertThrows(IllegalArgumentException.class, () -> Circle.readCircle(reader));
     }
 
     @DisplayName("Test circle radius validation")
     @ParameterizedTest(name = "[{index}] - validate radius {0}")
     @ValueSource(doubles = {-1, 0, -1e-10})
     void testCircleRadiusValidation(double radius) {
-        String line = String.valueOf(radius);
-        BufferedReader reader = new BufferedReader(new StringReader(line));
-
-        assertThrows(IllegalArgumentException.class, () -> Circle.readCircle(reader));
+        assertThrows(IllegalArgumentException.class, () -> new Circle(radius));
     }
 
     private double calculateArea(double radius) {
