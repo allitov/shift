@@ -7,13 +7,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.shift.figurecharacteristics.figure.Rectangle;
 
-import java.text.DecimalFormat;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class RectangleDataFormatterTest {
+class RectangleFormatterTest {
 
     @Mock
     private Rectangle rectangle;
@@ -28,7 +26,7 @@ class RectangleDataFormatterTest {
         when(rectangle.getLength()).thenReturn(10.);
         when(rectangle.getWidth()).thenReturn(15.);
         String expected = createExpectedString();
-        var formatter = new RectangleDataFormatter(new DecimalFormat("#.##"), "мм");
+        var formatter = new RectangleFormatter();
 
         String actual = formatter.format(rectangle);
 

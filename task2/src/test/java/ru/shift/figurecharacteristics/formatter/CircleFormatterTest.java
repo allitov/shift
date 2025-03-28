@@ -7,13 +7,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.shift.figurecharacteristics.figure.Circle;
 
-import java.text.DecimalFormat;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class CircleDataFormatterTest {
+class CircleFormatterTest {
 
     @Mock
     private Circle circle;
@@ -27,7 +25,7 @@ class CircleDataFormatterTest {
         when(circle.getRadius()).thenReturn(5.);
         when(circle.getDiameter()).thenReturn(10.);
         String expected = createExpectedString();
-        var formatter = new CircleDataFormatter(new DecimalFormat("#.##"), "мм");
+        var formatter = new CircleFormatter();
 
         String actual = formatter.format(circle);
 

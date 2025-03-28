@@ -10,6 +10,10 @@ public abstract class Figure {
         return type.getName();
     }
 
+    public FigureType getType() {
+        return type;
+    }
+
     public double getArea() {
         return area;
     }

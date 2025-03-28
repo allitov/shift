@@ -7,14 +7,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.shift.figurecharacteristics.figure.Triangle;
 
-import java.text.DecimalFormat;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class TriangleDataFormatterTest {
+class TriangleFormatterTest {
 
     @Mock
     private Triangle triangle;
@@ -30,7 +29,7 @@ class TriangleDataFormatterTest {
         when(triangle.getC()).thenReturn(5.);
         when(triangle.getSideToAngleMap()).thenReturn(Map.of(1., 2., 3., 4., 5., 6.));
         String expected = createExpectedString();
-        var formatter = new TriangleDataFormatter(new DecimalFormat("#.##"), "мм");
+        var formatter = new TriangleFormatter();
 
         String actual = formatter.format(triangle);
 
