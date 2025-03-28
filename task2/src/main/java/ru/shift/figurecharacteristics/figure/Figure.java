@@ -1,4 +1,4 @@
-package ru.shift.figurecharacteristics;
+package ru.shift.figurecharacteristics.figure;
 
 import java.text.DecimalFormat;
 
