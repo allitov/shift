@@ -33,15 +33,6 @@ public class Circle extends Figure {
         this.diameter = radius * 2;
     }
 
-    @Override
-    public String getFormattedData() {
-        return "Тип фигуры: " + name + LINE_SEPARATOR +
-                "Площадь: " + DECIMAL_FORMAT.format(area) + " кв. " + UNITS + LINE_SEPARATOR +
-                "Периметр: " + DECIMAL_FORMAT.format(perimeter) + " " + UNITS + LINE_SEPARATOR +
-                "Радиус: " + DECIMAL_FORMAT.format(radius) + " " + UNITS + LINE_SEPARATOR +
-                "Диаметр: " + DECIMAL_FORMAT.format(diameter) + " " + UNITS + LINE_SEPARATOR;
-    }
-
     private void validate(double radius) {
         if (radius <= 0) {
             throw new IllegalArgumentException("Radius must be greater than 0. Got " + radius);

@@ -40,16 +40,6 @@ public class Rectangle extends Figure {
         this.width = Math.min(a, b);
     }
 
-    @Override
-    public String getFormattedData() {
-        return "Тип фигуры: " + name + LINE_SEPARATOR +
-                "Площадь: " + DECIMAL_FORMAT.format(area) + " кв. " + UNITS + LINE_SEPARATOR +
-                "Периметр: " + DECIMAL_FORMAT.format(perimeter) + " " + UNITS + LINE_SEPARATOR +
-                "Диагональ: " + DECIMAL_FORMAT.format(diagonal) + " " + UNITS + LINE_SEPARATOR +
-                "Длина: " + DECIMAL_FORMAT.format(length) + " " + UNITS + LINE_SEPARATOR +
-                "Ширина: " + DECIMAL_FORMAT.format(width) + " " + UNITS + LINE_SEPARATOR;
-    }
-
     private void validate(double a, double b) {
         if (a <= 0) {
             throw new IllegalArgumentException("Rectangle side must be greater than 0. Got " + a);

@@ -11,7 +11,7 @@ public class Triangle extends Figure {
     private double a;
     private double b;
     private double c;
-    private Map<Double, Double> sideToAngle;
+    private Map<Double, Double> sideToAngleMap;
 
     public static Triangle readTriangle(BufferedReader reader) throws IOException {
         String[] params = reader.readLine().split(DELIMITER);
@@ -48,17 +48,7 @@ public class Triangle extends Figure {
         this.perimeter = a + b + c;
         double p = this.perimeter / 2;
         this.area = Math.sqrt(p * (p - a) * (p - b) * (p - c));
-        this.sideToAngle = calculateAngles(a, b, c);
-    }
-
-    @Override
-    public String getFormattedData() {
-        return "Тип фигуры: " + name + LINE_SEPARATOR +
-                "Площадь: " + DECIMAL_FORMAT.format(area) + " кв. " + UNITS + LINE_SEPARATOR +
-                "Периметр: " + DECIMAL_FORMAT.format(perimeter) + " " + UNITS + LINE_SEPARATOR +
-                "Сторона a: " + DECIMAL_FORMAT.format(a) + " " + UNITS + "; угол: " + DECIMAL_FORMAT.format(sideToAngle.get(a)) + " градусов" + LINE_SEPARATOR +
-                "Сторона b: " + DECIMAL_FORMAT.format(b) + " " + UNITS + "; угол: " + DECIMAL_FORMAT.format(sideToAngle.get(b)) + " градусов" + LINE_SEPARATOR +
-                "Сторона c: " + DECIMAL_FORMAT.format(c) + " " + UNITS + "; угол: " + DECIMAL_FORMAT.format(sideToAngle.get(c)) + " градусов" + LINE_SEPARATOR;
+        this.sideToAngleMap = calculateAngles(a, b, c);
     }
 
     private void validate(double a, double b, double c) {
@@ -92,8 +82,8 @@ public class Triangle extends Figure {
         return Math.acos(numerator / denominator);
     }
 
-    public Map<Double, Double> getSideToAngle() {
-        return Collections.unmodifiableMap(sideToAngle);
+    public Map<Double, Double> getSideToAngleMap() {
+        return Collections.unmodifiableMap(sideToAngleMap);
     }
 
     public double getA() {

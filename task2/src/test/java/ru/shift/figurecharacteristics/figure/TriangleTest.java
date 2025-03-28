@@ -8,7 +8,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.text.DecimalFormat;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -114,7 +113,7 @@ class TriangleTest {
 
         Triangle triangle = Triangle.readTriangle(reader);
 
-        assertEquals(expected, triangle.getSideToAngle());
+        assertEquals(expected, triangle.getSideToAngleMap());
     }
 
     @DisplayName("Test triangle input line validation")
@@ -149,29 +148,6 @@ class TriangleTest {
         BufferedReader reader = new BufferedReader(new StringReader(line));
 
         assertThrows(IllegalArgumentException.class, () -> Triangle.readTriangle(reader));
-    }
-
-    @DisplayName("Test triangle data formatting")
-    @Test
-    void testTriangleDataFormatting() throws IOException {
-        double a = 2, b = 4, c = 5;
-        double area = calculateArea(a, b, c);
-        double perimeter = calculatePerimeter(a, b, c);
-        Map<Double, Double> sideToAngle = calculateSideToAngle(a, b, c);
-        DecimalFormat df = new DecimalFormat("#.##");
-        String lineSeparator = System.lineSeparator();
-        String expected = "Тип фигуры: Треугольник" + lineSeparator +
-                "Площадь: " + df.format(area) + " кв. мм" + lineSeparator +
-                "Периметр: " + df.format(perimeter) + " мм" + lineSeparator +
-                "Сторона a: " + df.format(a) + " мм; угол: " + df.format(sideToAngle.get(a)) + " градусов" + lineSeparator +
-                "Сторона b: " + df.format(b) + " мм; угол: " + df.format(sideToAngle.get(b)) + " градусов" + lineSeparator +
-                "Сторона c: " + df.format(c) + " мм; угол: " + df.format(sideToAngle.get(c)) + " градусов" + lineSeparator;
-        String line = a + DELIMITER + b + DELIMITER + c;
-        BufferedReader reader = new BufferedReader(new StringReader(line));
-
-        Triangle triangle = Triangle.readTriangle(reader);
-
-        assertEquals(expected, triangle.getFormattedData());
     }
 
     private double calculatePerimeter(double a, double b, double c) {
