@@ -2,12 +2,12 @@ package ru.shift.figurecharacteristics.figure;
 
 public abstract class Figure {
 
-    protected String name;
+    protected FigureType type;
     protected double area;
     protected double perimeter;
 
     public String getName() {
-        return name;
+        return type.getName();
     }
 
     public double getArea() {

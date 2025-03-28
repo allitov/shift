@@ -8,7 +8,7 @@ public class Rectangle extends Figure {
 
     public Rectangle(double a, double b) {
         validate(a, b);
-        this.name = "Прямоугольник";
+        this.type = FigureType.RECTANGLE;
         this.area = a * b;
         this.perimeter = (a + b) * 2;
         this.diagonal = Math.sqrt((a * a) + (b * b));

@@ -7,7 +7,7 @@ public class Circle extends Figure {
 
     public Circle(double radius) {
         validate(radius);
-        this.name = "Круг";
+        this.type = FigureType.CIRCLE;
         this.area = Math.PI * radius * radius;
         this.perimeter = 2 * Math.PI * radius;
         this.radius = radius;

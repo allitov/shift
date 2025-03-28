@@ -16,7 +16,7 @@ public class Triangle extends Figure {
         this.a = a;
         this.b = b;
         this.c = c;
-        this.name = "Треугольник";
+        this.type = FigureType.TRIANGLE;
         this.perimeter = a + b + c;
         double p = this.perimeter / 2;
         this.area = Math.sqrt(p * (p - a) * (p - b) * (p - c));
