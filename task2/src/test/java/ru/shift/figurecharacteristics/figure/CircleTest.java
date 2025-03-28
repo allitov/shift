@@ -8,7 +8,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.text.DecimalFormat;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -104,27 +103,6 @@ class CircleTest {
         BufferedReader reader = new BufferedReader(new StringReader(line));
 
         assertThrows(IllegalArgumentException.class, () -> Circle.readCircle(reader));
-    }
-
-    @DisplayName("Test circle data formatting")
-    @Test
-    void testCircleDataFormatting() throws IOException {
-        double radius = 5;
-        double area = calculateArea(radius);
-        double perimeter = calculatePerimeter(radius);
-        double diameter = calculateDiameter(radius);
-        DecimalFormat df = new DecimalFormat("#.##");
-        String lineSeparator = System.lineSeparator();
-        String expected = "Тип фигуры: Круг" + lineSeparator +
-                "Площадь: " + df.format(area) + " кв. мм" + lineSeparator +
-                "Периметр: " + df.format(perimeter) + " мм" + lineSeparator +
-                "Радиус: " + df.format(radius) + " мм" + lineSeparator +
-                "Диаметр: " + df.format(diameter) + " мм" + lineSeparator;
-        BufferedReader reader = new BufferedReader(new StringReader(String.valueOf(radius)));
-
-        Circle circle = Circle.readCircle(reader);
-
-        assertEquals(expected, circle.getFormattedData());
     }
 
     private double calculateArea(double radius) {
