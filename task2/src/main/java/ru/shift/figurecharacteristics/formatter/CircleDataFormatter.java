@@ -4,18 +4,13 @@ import ru.shift.figurecharacteristics.figure.Circle;
 
 import java.text.DecimalFormat;
 
-public class CircleDataFormatter {
-
-    private final DecimalFormat decimalFormat;
-    private final String units;
-    private final String lineSeparator;
+public class CircleDataFormatter extends FigureDataFormatter<Circle> {
 
     public CircleDataFormatter(DecimalFormat decimalFormat, String units) {
-        this.decimalFormat = decimalFormat;
-        this.units = units;
-        this.lineSeparator = System.lineSeparator();
+        super(decimalFormat, units);
     }
 
+    @Override
     public String format(Circle circle) {
         return "Тип фигуры: " + circle.getName() + lineSeparator +
                 "Площадь: " + decimalFormat.format(circle.getArea()) + " кв. " + units + lineSeparator +

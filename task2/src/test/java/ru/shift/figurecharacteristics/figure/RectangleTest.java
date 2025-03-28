@@ -8,7 +8,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.text.DecimalFormat;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -146,31 +145,6 @@ class RectangleTest {
         BufferedReader reader = new BufferedReader(new StringReader(line));
 
         assertThrows(IllegalArgumentException.class, () -> Rectangle.readRectangle(reader));
-    }
-
-    @DisplayName("Test rectangle data formatting")
-    @Test
-    void testRectangleDataFormatting() throws IOException {
-        double a = 5, b = 10;
-        double area = calculateArea(a, b);
-        double perimeter = calculatePerimeter(a, b);
-        double diagonal = calculateDiagonal(a, b);
-        double length = calculateLength(a, b);
-        double width = calculateWidth(a, b);
-        DecimalFormat df = new DecimalFormat("#.##");
-        String lineSeparator = System.lineSeparator();
-        String expected = "Тип фигуры: Прямоугольник" + lineSeparator +
-                "Площадь: " + df.format(area) + " кв. мм" + lineSeparator +
-                "Периметр: " + df.format(perimeter) + " мм" + lineSeparator +
-                "Диагональ: " + df.format(diagonal) + " мм" + lineSeparator +
-                "Длина: " + df.format(length) + " мм" + lineSeparator +
-                "Ширина: " + df.format(width) + " мм" + lineSeparator;
-        String line = a + DELIMITER + b;
-        BufferedReader reader = new BufferedReader(new StringReader(line));
-
-        Rectangle rectangle = Rectangle.readRectangle(reader);
-
-        assertEquals(expected, rectangle.getFormattedData());
     }
 
     private double calculateArea(double a, double b) {
