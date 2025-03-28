@@ -4,27 +4,22 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import ru.shift.figurecharacteristics.figure.Figure;
-import ru.shift.figurecharacteristics.figure.Rectangle;
+import ru.shift.figurecharacteristics.figure.FigureType;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.StringReader;
 
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class RectangleFactoryTest {
 
-    @DisplayName("Test rectangle factory creation")
+    @DisplayName("Test rectangle factory type")
     @Test
-    void testRectangleFactoryCreation() throws IOException {
-        String input = createInputLine("10 20");
-        BufferedReader reader = new BufferedReader(new StringReader(input));
+    void testRectangleFactoryType() {
+        RectangleFactory factory = new RectangleFactory();
 
-        Figure rectangle = FigureFactory.create(reader);
-
-        assertInstanceOf(Rectangle.class, rectangle);
+        assertEquals(FigureType.RECTANGLE, factory.getType());
     }
 
     @DisplayName("Test rectangle input line validation")
@@ -39,12 +34,12 @@ class RectangleFactoryTest {
         String input = createInputLine(params);
         BufferedReader reader = new BufferedReader(new StringReader(input));
 
-        assertThrows(IllegalArgumentException.class, () -> FigureFactory.create(reader));
+        assertThrows(IllegalArgumentException.class, () -> new RectangleFactory().read(reader));
     }
 
     private String createInputLine(String params) {
         String lineSeparator = System.lineSeparator();
 
-        return "RECTANGLE" + lineSeparator + params;
+        return FigureType.RECTANGLE + lineSeparator + params;
     }
 }
