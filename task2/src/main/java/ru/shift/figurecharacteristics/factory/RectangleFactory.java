@@ -8,8 +8,6 @@ import java.io.IOException;
 
 public class RectangleFactory implements FigureFactory<Rectangle> {
 
-    private static final String DELIMITER = " ";
-
     @Override
     public FigureType getType() {
         return FigureType.RECTANGLE;
@@ -17,7 +15,7 @@ public class RectangleFactory implements FigureFactory<Rectangle> {
 
     @Override
     public Rectangle read(BufferedReader reader) throws IOException {
-        String[] params = reader.readLine().split(DELIMITER);
+        String[] params = reader.readLine().split(PARAMS_DELIMITER);
         if (params.length != 2) {
             throw new IllegalArgumentException("Rectangle expects 2 parameters. Got " + params.length);
         }

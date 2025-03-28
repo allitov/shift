@@ -1,7 +1,5 @@
 package ru.shift.figurecharacteristics.figure;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,33 +11,7 @@ public class Triangle extends Figure {
     private double c;
     private Map<Double, Double> sideToAngleMap;
 
-    public static Triangle readTriangle(BufferedReader reader) throws IOException {
-        String[] params = reader.readLine().split(DELIMITER);
-        if (params.length != 3) {
-            throw new IllegalArgumentException("Triangle expects 3 parameters. Got " + params.length);
-        }
-
-        double a, b, c;
-        try {
-            a = Double.parseDouble(params[0]);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Triangle side expects a number. Got a = " + params[0]);
-        }
-        try {
-            b = Double.parseDouble(params[1]);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Triangle side expects a number. Got b = " + params[1]);
-        }
-        try {
-            c = Double.parseDouble(params[2]);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Triangle side expects a number. Got c = " + params[2]);
-        }
-
-        return new Triangle(a, b, c);
-    }
-
-    private Triangle(double a, double b, double c) {
+    public Triangle(double a, double b, double c) {
         validate(a, b, c);
         this.a = a;
         this.b = b;

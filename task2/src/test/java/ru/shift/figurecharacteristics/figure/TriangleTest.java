@@ -5,65 +5,41 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TriangleTest {
 
-    private static final String DELIMITER = " ";
-
-    @DisplayName("Test triangle factory creation")
-    @Test
-    void testTriangleFactoryCreation() throws IOException {
-        BufferedReader reader = new BufferedReader(new StringReader("2 4 5"));
-
-        Triangle triangle = Triangle.readTriangle(reader);
-
-        assertInstanceOf(Triangle.class, triangle);
-    }
-
     @DisplayName("Test triangle name initialization")
     @Test
-    void testTriangleNameInitialization() throws IOException {
-        BufferedReader reader = new BufferedReader(new StringReader("2 4 5"));
-
-        Triangle triangle = Triangle.readTriangle(reader);
+    void testTriangleNameInitialization() {
+        Triangle triangle = new Triangle(2, 4, 5);
 
         assertEquals("Треугольник", triangle.getName());
     }
 
     @DisplayName("Test triangle 'a' side initialization")
     @Test
-    void testTriangleASideInitialization() throws IOException {
-        BufferedReader reader = new BufferedReader(new StringReader("2 4 5"));
-
-        Triangle triangle = Triangle.readTriangle(reader);
+    void testTriangleASideInitialization() {
+        Triangle triangle = new Triangle(2, 4, 5);
 
         assertEquals(2, triangle.getA());
     }
 
     @DisplayName("Test triangle 'b' side initialization")
     @Test
-    void testTriangleBSideInitialization() throws IOException {
-        BufferedReader reader = new BufferedReader(new StringReader("2 4 5"));
-
-        Triangle triangle = Triangle.readTriangle(reader);
+    void testTriangleBSideInitialization() {
+        Triangle triangle = new Triangle(2, 4, 5);
 
         assertEquals(4, triangle.getB());
     }
 
     @DisplayName("Test triangle 'c' side initialization")
     @Test
-    void testTriangleCSideInitialization() throws IOException {
-        BufferedReader reader = new BufferedReader(new StringReader("2 4 5"));
-
-        Triangle triangle = Triangle.readTriangle(reader);
+    void testTriangleCSideInitialization() {
+        Triangle triangle = new Triangle(2, 4, 5);
 
         assertEquals(5, triangle.getC());
     }
@@ -74,12 +50,10 @@ class TriangleTest {
             "2, 4, 5",
             "10, 20, 25"
     })
-    void testTriangleAreaCalculation(double a, double b, double c) throws IOException {
+    void testTriangleAreaCalculation(double a, double b, double c) {
         double area = calculateArea(a, b, c);
-        String line = a + DELIMITER + b + DELIMITER + c;
-        BufferedReader reader = new BufferedReader(new StringReader(line));
 
-        Triangle triangle = Triangle.readTriangle(reader);
+        Triangle triangle = new Triangle(a, b, c);
 
         assertEquals(area, triangle.getArea());
     }
@@ -90,12 +64,10 @@ class TriangleTest {
             "2, 4, 5",
             "10, 20, 25"
     })
-    void testTrianglePerimeterCalculation(double a, double b, double c) throws IOException {
+    void testTrianglePerimeterCalculation(double a, double b, double c) {
         double perimeter = calculatePerimeter(a, b, c);
-        String line = a + DELIMITER + b + DELIMITER + c;
-        BufferedReader reader = new BufferedReader(new StringReader(line));
 
-        Triangle triangle = Triangle.readTriangle(reader);
+        Triangle triangle = new Triangle(a, b, c);
 
         assertEquals(perimeter, triangle.getPerimeter());
     }
@@ -106,28 +78,12 @@ class TriangleTest {
             "2, 4, 5",
             "10, 20, 25"
     })
-    void testTriangleAnglesCalculation(double a, double b, double c) throws IOException {
+    void testTriangleAnglesCalculation(double a, double b, double c) {
         Map<Double, Double> expected = calculateSideToAngle(a, b, c);
-        String line = a + DELIMITER + b + DELIMITER + c;
-        BufferedReader reader = new BufferedReader(new StringReader(line));
 
-        Triangle triangle = Triangle.readTriangle(reader);
+        Triangle triangle = new Triangle(a, b, c);
 
         assertEquals(expected, triangle.getSideToAngleMap());
-    }
-
-    @DisplayName("Test triangle input line validation")
-    @ParameterizedTest(name = "[{index}] - validate line \"{0}\"")
-    @CsvSource({
-            "2 4 5 6",
-            "red 2 4",
-            "20 blue 40",
-            "10 1 yellow"
-    })
-    void testTriangleInputLineValidation(String line) {
-        BufferedReader reader = new BufferedReader(new StringReader(line));
-
-        assertThrows(IllegalArgumentException.class, () -> Triangle.readTriangle(reader));
     }
 
     @DisplayName("Test triangle sides validation")
@@ -144,10 +100,7 @@ class TriangleTest {
             "2, 4, 120"
     })
     void testTriangleSidesValidation(double a, double b, double c) {
-        String line = a + DELIMITER + b + DELIMITER + c;
-        BufferedReader reader = new BufferedReader(new StringReader(line));
-
-        assertThrows(IllegalArgumentException.class, () -> Triangle.readTriangle(reader));
+        assertThrows(IllegalArgumentException.class, () -> new Triangle(a, b, c));
     }
 
     private double calculatePerimeter(double a, double b, double c) {

@@ -2,8 +2,6 @@ package ru.shift.figurecharacteristics.figure;
 
 public abstract class Figure {
 
-    protected static final String DELIMITER = " ";
-
     protected String name;
     protected double area;
     protected double perimeter;

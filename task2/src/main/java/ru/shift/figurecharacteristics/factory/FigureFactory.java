@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 
 public interface FigureFactory<T extends Figure> {
 
+    String PARAMS_DELIMITER = " ";
+
     Map<FigureType, FigureFactory<?>> registry = ServiceLoader.load(FigureFactory.class).stream()
             .map(ServiceLoader.Provider::get)
             .collect(Collectors.toMap(FigureFactory::getType, f -> (FigureFactory<?>) f));

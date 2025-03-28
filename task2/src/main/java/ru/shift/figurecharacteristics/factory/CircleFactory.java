@@ -8,8 +8,6 @@ import java.io.IOException;
 
 public class CircleFactory implements FigureFactory<Circle> {
 
-    private static final String DELIMITER = " ";
-
     @Override
     public FigureType getType() {
         return FigureType.CIRCLE;
@@ -17,7 +15,7 @@ public class CircleFactory implements FigureFactory<Circle> {
 
     @Override
     public Circle read(BufferedReader reader) throws IOException {
-        String[] params = reader.readLine().split(DELIMITER);
+        String[] params = reader.readLine().split(PARAMS_DELIMITER);
         if (params.length != 1) {
             throw new IllegalArgumentException("Circle expects 1 parameter. Got " + params.length);
         }
