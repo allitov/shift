@@ -1,6 +1,7 @@
 package ru.shift;
 
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.shift.figurecharacteristics.factory.FigureFactory;
@@ -13,6 +14,7 @@ import ru.shift.figurecharacteristics.printer.FileResultPrinter;
 import ru.shift.figurecharacteristics.printer.ResultPrinter;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 
 public class Main {
@@ -36,9 +38,11 @@ public class Main {
                 printer = new ConsoleResultPrinter();
             }
             printer.print(result);
-        } catch (Exception e) {
-            logger.error("Error occurred: ", e);
+        } catch (IllegalArgumentException | FileNotFoundException | ParseException e) {
+            logger.error(e.getMessage());
             System.exit(2);
+        } catch (Exception e) {
+            logger.error("Fatal error: ", e);
         }
     }
 }
