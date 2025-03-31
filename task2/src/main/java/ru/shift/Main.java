@@ -22,13 +22,15 @@ public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) {
+
         try {
             AppOptionsContainer appOptionsContainer = new AppOptionsContainer(args);
             CommandLine options = appOptionsContainer.getOptions();
 
-            BufferedReader br = new BufferedReader(new FileReader(options.getOptionValue(AppOption.DATA_FILE.getOption())));
-            Figure figure = FigureFactory.create(br);
-            br.close();
+            Figure figure;
+            try (BufferedReader br = new BufferedReader(new FileReader(options.getOptionValue(AppOption.DATA_FILE.getOption())))) {
+                figure = FigureFactory.create(br);
+            }
 
             String result = FigureFormatter.createFormattedString(figure);
             ResultPrinter printer;
