@@ -2,9 +2,9 @@ package ru.shift.figurecharacteristics.figure;
 
 public class Rectangle extends Figure {
 
-    private double diagonal;
-    private double length;
-    private double width;
+    private final double diagonal;
+    private final double length;
+    private final double width;
 
     public Rectangle(double a, double b) {
         validate(a, b);

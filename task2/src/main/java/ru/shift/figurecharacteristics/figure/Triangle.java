@@ -6,10 +6,10 @@ import java.util.Map;
 
 public class Triangle extends Figure {
 
-    private double a;
-    private double b;
-    private double c;
-    private Map<Double, Double> sideToAngleMap;
+    private final double a;
+    private final double b;
+    private final double c;
+    private final Map<Double, Double> sideToAngleMap;
 
     public Triangle(double a, double b, double c) {
         validate(a, b, c);

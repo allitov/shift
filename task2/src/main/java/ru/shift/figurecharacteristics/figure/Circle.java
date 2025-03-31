@@ -2,8 +2,8 @@ package ru.shift.figurecharacteristics.figure;
 
 public class Circle extends Figure {
 
-    private double radius;
-    private double diameter;
+    private final double radius;
+    private final double diameter;
 
     public Circle(double radius) {
         validate(radius);
