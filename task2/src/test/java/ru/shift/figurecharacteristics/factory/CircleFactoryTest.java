@@ -4,12 +4,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import ru.shift.figurecharacteristics.figure.Circle;
+import ru.shift.figurecharacteristics.figure.Figure;
 import ru.shift.figurecharacteristics.figure.FigureType;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.StringReader;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CircleFactoryTest {
@@ -20,6 +24,18 @@ class CircleFactoryTest {
         CircleFactory factory = new CircleFactory();
 
         assertEquals(FigureType.CIRCLE, factory.getType());
+    }
+
+    @DisplayName("Test circle creation")
+    @Test
+    void testCircleCreation() throws IOException {
+        String input = "5";
+        BufferedReader reader = new BufferedReader(new StringReader(input));
+        CircleFactory factory = new CircleFactory();
+
+        Figure circle = factory.read(reader);
+
+        assertInstanceOf(Circle.class, circle);
     }
 
     @DisplayName("Test circle input line validation")
