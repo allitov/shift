@@ -20,16 +20,4 @@ public class AppOptionsContainer {
     public CommandLine getOptions() {
         return options;
     }
-
-    //    private static void printHelp(Options options) {
-//        HelpFormatter formatter = new HelpFormatter();
-//        PrintWriter pw = new PrintWriter(System.out);
-//        formatter.printUsage(
-//                pw,
-//                100,
-//                "java -jar cft-test-app.jar [options] file1 file2 ..."
-//        );
-//        formatter.printOptions(pw, 100, options, 2, 5);
-//        pw.close();
-//    }
 }
