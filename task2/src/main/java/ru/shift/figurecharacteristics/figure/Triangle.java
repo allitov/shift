@@ -17,9 +17,8 @@ public class Triangle extends Figure {
         this.b = b;
         this.c = c;
         this.type = FigureType.TRIANGLE;
-        this.perimeter = a + b + c;
-        double p = this.perimeter / 2;
-        this.area = Math.sqrt(p * (p - a) * (p - b) * (p - c));
+        this.perimeter = calculatePerimeter();
+        this.area = calculateArea();
         this.sideToAngleMap = calculateAngles(a, b, c);
     }
 
@@ -36,6 +35,18 @@ public class Triangle extends Figure {
         if (a >= b + c || b >= a + c || c >= a + b) {
             throw new IllegalArgumentException("Triangle inequality error");
         }
+    }
+
+    @Override
+    protected double calculateArea() {
+        double p = this.perimeter / 2;
+
+        return Math.sqrt(p * (p - a) * (p - b) * (p - c));
+    }
+
+    @Override
+    protected double calculatePerimeter() {
+        return a + b + c;
     }
 
     private Map<Double, Double> calculateAngles(double a, double b, double c) {

@@ -6,6 +6,10 @@ public abstract class Figure {
     protected double area;
     protected double perimeter;
 
+    protected abstract double calculateArea();
+
+    protected abstract double calculatePerimeter();
+
     public String getName() {
         return type.getName();
     }
@@ -15,10 +19,16 @@ public abstract class Figure {
     }
 
     public double getArea() {
+        if (area == 0) {
+            return calculateArea();
+        }
         return area;
     }
 
     public double getPerimeter() {
+        if (perimeter == 0) {
+            return calculatePerimeter();
+        }
         return perimeter;
     }
 }
