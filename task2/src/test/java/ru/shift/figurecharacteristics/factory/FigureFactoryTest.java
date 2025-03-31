@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FigureFactoryTest {
 
@@ -47,6 +48,15 @@ class FigureFactoryTest {
         Figure figure = FigureFactory.create(reader);
 
         assertInstanceOf(Triangle.class, figure);
+    }
+
+    @DisplayName("Test invalid figure creation")
+    @Test
+    void testInvalidFigureCreation() {
+        String input = "SQUARE";
+        BufferedReader reader = new BufferedReader(new StringReader(input));
+
+        assertThrows(IllegalArgumentException.class, () -> FigureFactory.create(reader));
     }
 
     private String createInput(FigureType type, String params) {
