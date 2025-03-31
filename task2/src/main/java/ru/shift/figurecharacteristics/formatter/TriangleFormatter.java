@@ -1,11 +1,19 @@
 package ru.shift.figurecharacteristics.formatter;
 
+import ru.shift.figurecharacteristics.figure.Figure;
+import ru.shift.figurecharacteristics.figure.FigureType;
 import ru.shift.figurecharacteristics.figure.Triangle;
 
-public class TriangleFormatter implements FigureFormatter<Triangle> {
+public class TriangleFormatter implements FigureFormatter {
 
     @Override
-    public String format(Triangle triangle) {
+    public FigureType getType() {
+        return FigureType.TRIANGLE;
+    }
+
+    @Override
+    public String format(Figure figure) {
+        Triangle triangle = (Triangle) figure;
         double a = triangle.getA();
         double b = triangle.getB();
         double c = triangle.getC();

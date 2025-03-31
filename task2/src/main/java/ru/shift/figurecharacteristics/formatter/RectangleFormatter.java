@@ -1,11 +1,20 @@
 package ru.shift.figurecharacteristics.formatter;
 
+import ru.shift.figurecharacteristics.figure.Figure;
+import ru.shift.figurecharacteristics.figure.FigureType;
 import ru.shift.figurecharacteristics.figure.Rectangle;
 
-public class RectangleFormatter implements FigureFormatter<Rectangle> {
+public class RectangleFormatter implements FigureFormatter {
 
     @Override
-    public String format(Rectangle rectangle) {
+    public FigureType getType() {
+        return FigureType.RECTANGLE;
+    }
+
+    @Override
+    public String format(Figure figure) {
+        Rectangle rectangle = (Rectangle) figure;
+
         return "Тип фигуры: " + rectangle.getName() + LINE_SEPARATOR +
                 "Площадь: " + DECIMAL_FORMAT.format(rectangle.getArea()) + " кв. " + UNITS + LINE_SEPARATOR +
                 "Периметр: " + DECIMAL_FORMAT.format(rectangle.getPerimeter()) + SPACE + UNITS + LINE_SEPARATOR +
