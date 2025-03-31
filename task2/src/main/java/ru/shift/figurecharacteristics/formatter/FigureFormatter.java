@@ -12,6 +12,7 @@ public interface FigureFormatter<T extends Figure> {
     DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
     String UNITS = "мм";
     String LINE_SEPARATOR = System.lineSeparator();
+    String SPACE = " ";
 
     String format(T figure);
 
