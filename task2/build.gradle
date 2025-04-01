@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+}
+
+group = 'ru.shift'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.apache.logging.log4j:log4j-core:2.24.3'
+    implementation 'commons-cli:commons-cli:1.9.0'
+
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.16.1'
+}
+
+test {
+    useJUnitPlatform()
+}
