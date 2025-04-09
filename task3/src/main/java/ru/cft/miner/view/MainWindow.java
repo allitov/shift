@@ -199,11 +199,11 @@ public class MainWindow extends JFrame implements FlagListener, CellRevealListen
     }
 
     @Override
-    public void onFlagSet(int row, int column, boolean isFlagSet) {
-        if (isFlagSet) {
-            setCellImage(row, column, GameImage.MARKED);
+    public void onFlagSet(Cell cell) {
+        if (cell.isFlagged()) {
+            setCellImage(cell.getRow(), cell.getCol(), GameImage.MARKED);
         } else {
-            setCellImage(row, column, GameImage.CLOSED);
+            setCellImage(cell.getRow(), cell.getCol(), GameImage.CLOSED);
         }
     }
 

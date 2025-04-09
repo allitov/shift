@@ -1,6 +1,5 @@
 package ru.cft.miner.model;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -55,7 +54,7 @@ public class GameModel {
         if (!cell.isRevealed()) {
             cell.setFlagged(!cell.isFlagged());
             if (flagListener != null) {
-                flagListener.onFlagSet(row, col, cell.isFlagged());
+                flagListener.onFlagSet(cell);
             }
         }
     }
