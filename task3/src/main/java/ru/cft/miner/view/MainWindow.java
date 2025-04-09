@@ -1,12 +1,17 @@
 package ru.cft.miner.view;
 
+import ru.cft.miner.model.Cell;
+import ru.cft.miner.model.CellRevealListener;
+import ru.cft.miner.model.FlagListener;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
-public class MainWindow extends JFrame {
+public class MainWindow extends JFrame implements FlagListener, CellRevealListener {
     private final Container contentPane;
     private final GridBagLayout mainLayout;
 
@@ -191,5 +196,27 @@ public class MainWindow extends JFrame {
         gbc.weightx = 0.1;
         mainLayout.setConstraints(label, gbc);
         contentPane.add(label);
+    }
+
+    @Override
+    public void onFlagSet(int row, int column, boolean isFlagSet) {
+        if (isFlagSet) {
+            setCellImage(row, column, GameImage.MARKED);
+        } else {
+            setCellImage(row, column, GameImage.CLOSED);
+        }
+    }
+
+    @Override
+    public void onCellRevealed(List<Cell> cells) {
+        for (Cell cell : cells) {
+            if (cell.isMine()) {
+                setCellImage(cell.getRow(), cell.getCol(), GameImage.BOMB);
+            } else if (cell.getMinesAround() != 0) {
+                setCellImage(cell.getRow(), cell.getCol(), GameImage.getNumberImage(cell.getMinesAround()));
+            } else {
+                setCellImage(cell.getRow(), cell.getCol(), GameImage.EMPTY);
+            }
+        }
     }
 }

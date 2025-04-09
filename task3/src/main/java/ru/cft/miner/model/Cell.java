@@ -6,6 +6,13 @@ public class Cell {
     private boolean isMine;
     private boolean isFlagged;
     private int minesAround;
+    private final int col;
+    private final int row;
+
+    public Cell(int row, int col) {
+        this.row = row;
+        this.col = col;
+    }
 
     @Override
     public String toString() {
@@ -46,5 +53,13 @@ public class Cell {
 
     public void incrementMinesAround() {
         this.minesAround++;
+    }
+
+    public int getCol() {
+        return col;
+    }
+
+    public int getRow() {
+        return row;
     }
 }

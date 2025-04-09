@@ -17,7 +17,7 @@ public class Application {
         mainWindow.setVisible(true);
         GameModel gameModel = new GameModel();
         GameController controller = new GameController(gameModel, mainWindow);
-        controller.startNewGame(10, 10, 30);
+        controller.startNewGame(10, 10, 10);
 //        GameModel gameModel = new GameModel();
 //        gameModel.initGame(10, 10, 10);
 //        Cell[][] field = gameModel.getField();

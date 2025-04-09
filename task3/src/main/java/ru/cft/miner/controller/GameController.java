@@ -15,6 +15,8 @@ public class GameController implements CellEventListener {
     public GameController(GameModel model, MainWindow view) {
         this.model = model;
         this.view = view;
+        model.setFlagListener(view);
+        model.setCellRevealListener(view);
         view.setCellListener(this);
     }
 
@@ -49,6 +51,6 @@ public class GameController implements CellEventListener {
             case RIGHT_BUTTON -> model.setFlag(x, y);
             case MIDDLE_BUTTON -> {/* TODO: not implemented yet */}
         }
-        updateView();
+//        updateView();
     }
 }
