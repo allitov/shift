@@ -119,10 +119,10 @@ public class MainWindow extends JFrame {
                                 listener.onMouseClick(x, y, ButtonType.LEFT_BUTTON);
                                 break;
                             case MouseEvent.BUTTON2:
-                                listener.onMouseClick(x, y, ButtonType.RIGHT_BUTTON);
+                                listener.onMouseClick(x, y, ButtonType.MIDDLE_BUTTON);
                                 break;
                             case MouseEvent.BUTTON3:
-                                listener.onMouseClick(x, y, ButtonType.MIDDLE_BUTTON);
+                                listener.onMouseClick(x, y, ButtonType.RIGHT_BUTTON);
                                 break;
                             default:
                                 // Other mouse buttons are ignored
