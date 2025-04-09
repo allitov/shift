@@ -1,10 +1,8 @@
 package ru.cft.miner.controller;
 
-import ru.cft.miner.model.Cell;
 import ru.cft.miner.model.GameModel;
 import ru.cft.miner.view.ButtonType;
 import ru.cft.miner.view.CellEventListener;
-import ru.cft.miner.view.GameImage;
 import ru.cft.miner.view.MainWindow;
 
 public class GameController implements CellEventListener {
@@ -25,25 +23,6 @@ public class GameController implements CellEventListener {
         view.createGameField(row, col);
     }
 
-    private void updateView() {
-        for (int row = 0; row < model.getRows(); row++) {
-            for (int col = 0; col < model.getCols(); col++) {
-                Cell cell = model.getCell(row, col);
-                if (cell.isRevealed()) {
-                    if (cell.isMine()) {
-                        view.setCellImage(row, col, GameImage.BOMB);
-                    } else {
-                        view.setCellImage(row, col, GameImage.getNumberImage(cell.getMinesAround()));
-                    }
-                } else if (cell.isFlagged()) {
-                    view.setCellImage(row, col, GameImage.MARKED);
-                } else {
-                    view.setCellImage(row, col, GameImage.CLOSED);
-                }
-            }
-        }
-    }
-
     @Override
     public void onMouseClick(int x, int y, ButtonType buttonType) {
         switch (buttonType) {
@@ -51,6 +30,5 @@ public class GameController implements CellEventListener {
             case RIGHT_BUTTON -> model.setFlag(x, y);
             case MIDDLE_BUTTON -> {/* TODO: not implemented yet */}
         }
-//        updateView();
     }
 }

@@ -1,6 +1,5 @@
 package ru.cft.miner.model;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -12,24 +11,12 @@ public class GameModel {
     private int rows;
     private int cols;
 
-    private int totalBombs;
-    private int remainingBombs;
-
-    private boolean isGameStarted;
-    private boolean isGameOver;
-    private boolean isGameWon;
-
     private FlagListener flagListener;
     private CellRevealListener cellRevealListener;
 
     public void initGame(int rows, int cols, int bombs) {
         this.rows = rows;
         this.cols = cols;
-        this.totalBombs = bombs;
-        this.remainingBombs = bombs;
-        this.isGameStarted = false;
-        this.isGameOver = false;
-        this.isGameWon = false;
         this.field = new Cell[rows][cols];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -61,10 +48,6 @@ public class GameModel {
 
     private List<Cell> openEmptyCells(int row, int col) {
         Cell cell = field[row][col];
-        if (cell.isRevealed() || cell.isFlagged()) {
-            return Collections.emptyList();
-        }
-
         List<Cell> cellsToOpen = new LinkedList<>();
         cell.setRevealed(true);
         cellsToOpen.add(cell);
@@ -100,60 +83,6 @@ public class GameModel {
         }
 
         return cellsToOpen;
-//        Queue<Cell> openedCells = new LinkedList<>();
-//        openedCells.add(field[row][col]);
-//        List<Cell> openedCellsList = new ArrayList<>();
-//        while (!openedCells.isEmpty()) {
-//            Cell cell = openedCells.poll();
-//            if (cell.isRevealed() || cell.isFlagged()) {
-//                continue;
-//            }
-//
-//            if (cell.isMine()) {
-//                openedCells.add(cell);
-//                break;
-//            }
-//
-//            cell.setRevealed(true);
-//            for (int i = cell.getRow() - 1; i <= cell.getRow() + 1; i++) {
-//                for (int j = cell.getCol() - 1; j <= cell.getCol() + 1; j++) {
-//                    if (i == cell.getRow() && j == cell.getCol()) {
-//                        continue;
-//                    }
-//                    if (isCellValid(i, j)) {
-//                        openedCellsList.add(field[i][j]);
-//                        if (field[i][j].getMinesAround() == 0) {
-//                            openedCells.add(field[i][j]);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        return openedCellsList;
-//        Queue<Cell> openedCells = new LinkedList<>();
-//        openedCells.add(field[row][col]);
-//        List<Cell> cellsToReveal = new LinkedList<>();
-//        while (!openedCells.isEmpty()) {
-//            Cell cell = openedCells.poll();
-//            if (cell.isRevealed()) {
-//                continue;
-//            }
-//            cell.setRevealed(true);
-//            for (int i = row - 1; i <= row + 1; i++) {
-//                for (int j = col - 1; j <= col + 1; j++) {
-//                    if (isCellValid(i, j) && !(i == cell.getRow() && j == cell.getCol())) {
-//                        Cell cellToOpen = field[i][j];
-//                        if (cell.getMinesAround() == 0) {
-//                            openedCells.add(cellToOpen);
-//                        }
-//                        cellsToReveal.add(cellToOpen);
-//                    }
-//                }
-//            }
-//        }
-//
-//        return cellsToReveal;
     }
 
     private void placeBombs(int bombs) {
@@ -182,22 +111,6 @@ public class GameModel {
 
     private boolean isCellValid(int row, int col) {
         return row >= 0 && row < rows && col >= 0 && col < cols && !field[row][col].isMine();
-    }
-
-    public Cell getCell(int row, int col) {
-        return field[row][col];
-    }
-
-    public Cell[][] getField() {
-        return field;
-    }
-
-    public int getRows() {
-        return rows;
-    }
-
-    public int getCols() {
-        return cols;
     }
 
     public void setFlagListener(FlagListener flagListener) {
