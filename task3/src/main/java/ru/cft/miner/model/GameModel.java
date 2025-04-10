@@ -10,6 +10,9 @@ public class GameModel {
     private Cell[][] field;
     private int rows;
     private int cols;
+    private int totalBombs;
+
+    private GameStatus status;
 
     private FlagListener flagListener;
     private CellRevealListener cellRevealListener;
@@ -23,7 +26,8 @@ public class GameModel {
                 this.field[i][j] = new Cell(i, j);
             }
         }
-        placeBombs(bombs);
+        this.totalBombs = bombs;
+        this.status = GameStatus.INIT;
     }
 
     public void revealCell(int row, int col) {
@@ -85,18 +89,19 @@ public class GameModel {
         return cellsToOpen;
     }
 
-    private void placeBombs(int bombs) {
+    public void placeBombs(int x, int y) {
         Random rand = new Random();
         int bombsPlaced = 0;
-        while (bombsPlaced < bombs) {
+        while (bombsPlaced < totalBombs) {
             int row = rand.nextInt(rows);
             int col = rand.nextInt(cols);
-            if (!field[row][col].isMine()) {
+            if (!field[row][col].isMine() && !(row >= x - 1 && row <= x + 1 && col >= y - 1 && col <= y + 1)) {
                 field[row][col].setMine(true);
                 incrementCellsAround(row, col);
                 bombsPlaced++;
             }
         }
+        status = GameStatus.RUNNING;
     }
 
     private void incrementCellsAround(int row, int col) {
@@ -107,6 +112,10 @@ public class GameModel {
                 }
             }
         }
+    }
+
+    public GameStatus getStatus() {
+        return status;
     }
 
     private boolean isCellValid(int row, int col) {

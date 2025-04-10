@@ -1,6 +1,7 @@
 package ru.cft.miner.controller;
 
 import ru.cft.miner.model.GameModel;
+import ru.cft.miner.model.GameStatus;
 import ru.cft.miner.view.ButtonType;
 import ru.cft.miner.view.CellEventListener;
 import ru.cft.miner.view.MainWindow;
@@ -26,7 +27,12 @@ public class GameController implements CellEventListener {
     @Override
     public void onMouseClick(int x, int y, ButtonType buttonType) {
         switch (buttonType) {
-            case LEFT_BUTTON -> model.revealCell(x, y);
+            case LEFT_BUTTON -> {
+                if (model.getStatus() == GameStatus.INIT) {
+                    model.placeBombs(x, y);
+                }
+                model.revealCell(x, y);
+            }
             case RIGHT_BUTTON -> model.setFlag(x, y);
             case MIDDLE_BUTTON -> {/* TODO: not implemented yet */}
         }
