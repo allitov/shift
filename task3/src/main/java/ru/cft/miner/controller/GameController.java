@@ -16,6 +16,7 @@ public class GameController implements CellEventListener {
         this.view = view;
         model.setFlagListener(view);
         model.setCellRevealListener(view);
+        model.setLoseListener(view);
         view.setCellListener(this);
     }
 

@@ -3,6 +3,7 @@ package ru.cft.miner.view;
 import ru.cft.miner.model.Cell;
 import ru.cft.miner.model.CellRevealListener;
 import ru.cft.miner.model.FlagListener;
+import ru.cft.miner.model.LoseListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
-public class MainWindow extends JFrame implements FlagListener, CellRevealListener {
+public class MainWindow extends JFrame implements FlagListener, CellRevealListener, LoseListener {
     private final Container contentPane;
     private final GridBagLayout mainLayout;
 
@@ -218,5 +219,10 @@ public class MainWindow extends JFrame implements FlagListener, CellRevealListen
                 setCellImage(cell.getRow(), cell.getCol(), GameImage.EMPTY);
             }
         }
+    }
+
+    @Override
+    public void onLose() {
+        new LoseWindow(this);
     }
 }

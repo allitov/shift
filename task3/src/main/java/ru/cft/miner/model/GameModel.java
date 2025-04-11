@@ -16,6 +16,7 @@ public class GameModel {
 
     private FlagListener flagListener;
     private CellRevealListener cellRevealListener;
+    private LoseListener loseListener;
 
     public void initGame(int rows, int cols, int bombs) {
         this.rows = rows;
@@ -37,6 +38,12 @@ public class GameModel {
             if (cellRevealListener != null) {
                 cellRevealListener.onCellRevealed(cellsToOpen);
             }
+            if (cellsToOpen.size() == 1 && cellsToOpen.get(0).isMine()) {
+                status = GameStatus.LOSE;
+                if (loseListener != null) {
+                    loseListener.onLose();
+                }
+            }
         }
     }
 
@@ -56,7 +63,6 @@ public class GameModel {
         cell.setRevealed(true);
         cellsToOpen.add(cell);
         if (cell.isMine() || cell.getMinesAround() != 0) {
-            cellsToOpen.add(cell);
             return cellsToOpen;
         }
 
@@ -128,5 +134,9 @@ public class GameModel {
 
     public void setCellRevealListener(CellRevealListener cellRevealListener) {
         this.cellRevealListener = cellRevealListener;
+    }
+
+    public void setLoseListener(LoseListener loseListener) {
+        this.loseListener = loseListener;
     }
 }
