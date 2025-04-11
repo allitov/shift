@@ -2,57 +2,17 @@ package ru.cft.miner.model;
 
 public class Cell {
 
-    private boolean isRevealed;
-    private boolean isMine;
-    private boolean isFlagged;
-    private int minesAround;
-    private final int col;
     private final int row;
+    private final int col;
+
+    private boolean isRevealed;
+    private boolean isFlagged;
+    private boolean isMine;
+    private int minesAroundCounter;
 
     public Cell(int row, int col) {
         this.row = row;
         this.col = col;
-    }
-
-    @Override
-    public String toString() {
-        if (isMine) {
-            return "X";
-        }
-
-        return String.valueOf(minesAround);
-    }
-
-    public boolean isRevealed() {
-        return isRevealed;
-    }
-
-    public void setRevealed(boolean revealed) {
-        isRevealed = revealed;
-    }
-
-    public boolean isMine() {
-        return isMine;
-    }
-
-    public void setMine(boolean mine) {
-        isMine = mine;
-    }
-
-    public boolean isFlagged() {
-        return isFlagged;
-    }
-
-    public void setFlagged(boolean flagged) {
-        isFlagged = flagged;
-    }
-
-    public int getMinesAround() {
-        return minesAround;
-    }
-
-    public void incrementMinesAround() {
-        this.minesAround++;
     }
 
     public int getCol() {
@@ -61,5 +21,37 @@ public class Cell {
 
     public int getRow() {
         return row;
+    }
+
+    public void setFlagged(boolean flagged) {
+        this.isFlagged = flagged;
+    }
+
+    public boolean isFlagged() {
+        return isFlagged;
+    }
+
+    public boolean isMine() {
+        return isMine;
+    }
+
+    public void setMine(boolean mine) {
+        this.isMine = mine;
+    }
+
+    public void incrementMinesAroundCounter() {
+        minesAroundCounter++;
+    }
+
+    public int getMinesAroundCounter() {
+        return minesAroundCounter;
+    }
+
+    public boolean isRevealed() {
+        return isRevealed;
+    }
+
+    public void setRevealed(boolean revealed) {
+        isRevealed = revealed;
     }
 }
