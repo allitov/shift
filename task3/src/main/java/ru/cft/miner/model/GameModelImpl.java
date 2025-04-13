@@ -1,6 +1,8 @@
 package ru.cft.miner.model;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 
@@ -17,6 +19,9 @@ public class GameModelImpl implements GameModel {
 
     private CellObserver cellObserver;
     private FlagObserver flagObserver;
+    private MineObserver mineObserver;
+    private LoseObserver loseObserver;
+    private WinObserver winObserver;
 
     @Override
     public void initGame(int rowsCount, int colsCount, int minesCount) {
@@ -62,6 +67,10 @@ public class GameModelImpl implements GameModel {
             cell.setFlagged(true);
             flagsLeft--;
         }
+
+        if (flagObserver != null) {
+            flagObserver.onFlagUpdate(cell);
+        }
     }
 
     @Override
@@ -82,13 +91,21 @@ public class GameModelImpl implements GameModel {
         cell.setRevealed(true);
         if (cell.isMine()) {
             status = GameStatus.LOST;
+            if (mineObserver != null) {
+                mineObserver.onMine(cell);
+            }
+            if (loseObserver != null) {
+                loseObserver.onLose();
+            }
             return;
         }
 
+        List<Cell> cellsToOpen = new ArrayList<>();
         Queue<Cell> queue = new LinkedList<>();
         queue.add(cell);
         while (!queue.isEmpty()) {
             Cell currentCell = queue.poll();
+            cellsToOpen.add(currentCell);
             if (currentCell.getMinesAroundCounter() > 0) {
                 continue;
             }
@@ -105,6 +122,10 @@ public class GameModelImpl implements GameModel {
                     }
                 }
             }
+        }
+
+        if (cellObserver != null) {
+            cellObserver.onCellUpdate(cellsToOpen);
         }
     }
 
@@ -124,6 +145,16 @@ public class GameModelImpl implements GameModel {
     }
 
     @Override
+    public void registerObserver(MineObserver observer) {
+        mineObserver = observer;
+    }
+
+    @Override
+    public void removeObserver(MineObserver observer) {
+        mineObserver = null;
+    }
+
+    @Override
     public void registerObserver(FlagObserver observer) {
         flagObserver = observer;
     }
@@ -135,22 +166,22 @@ public class GameModelImpl implements GameModel {
 
     @Override
     public void registerObserver(WinObserver observer) {
-
+        winObserver = observer;
     }
 
     @Override
     public void removeObserver(WinObserver observer) {
-
+        winObserver = null;
     }
 
     @Override
     public void registerObserver(LoseObserver observer) {
-
+        loseObserver = observer;
     }
 
     @Override
     public void removeObserver(LoseObserver observer) {
-
+        loseObserver = null;
     }
 
     private void initField() {

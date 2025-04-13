@@ -1,6 +1,6 @@
 package ru.cft.miner.model;
 
-public interface LoseListener {
+public interface LoseObserver {
 
     void onLose();
 }

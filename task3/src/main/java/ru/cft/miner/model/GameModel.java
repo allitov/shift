@@ -16,6 +16,10 @@ public interface GameModel {
 
     void removeObserver(CellObserver observer);
 
+    void registerObserver(MineObserver observer);
+
+    void removeObserver(MineObserver observer);
+
     void registerObserver(FlagObserver observer);
 
     void removeObserver(FlagObserver observer);
