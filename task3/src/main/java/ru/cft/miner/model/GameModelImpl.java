@@ -2,6 +2,7 @@ package ru.cft.miner.model;
 
 import ru.cft.miner.model.observer.CellOpeningListener;
 import ru.cft.miner.model.observer.FlagChangeListener;
+import ru.cft.miner.model.observer.GameStatusListener;
 import ru.cft.miner.view.GameType;
 
 import java.util.List;
@@ -60,6 +61,7 @@ public class GameModelImpl implements GameModel {
         List<CellDto> openedCells = cellOpener.openCells(gameField, row, col);
         if (!openedCells.isEmpty() && cellOpeningListener != null) {
             cellOpeningListener.onCellOpening(openedCells);
+            checkGameStatus(openedCells);
         }
     }
 
@@ -91,5 +93,22 @@ public class GameModelImpl implements GameModel {
     @Override
     public void removeObserver(FlagChangeListener observer) {
         flagChangeListener = null;
+    }
+
+    private void checkGameStatus(List<CellDto> openedCells) {
+        if (openedCells.size() == 1 && openedCells.get(0).isMine()) {
+            status = GameStatus.LOST;
+            if (gameStatusListener != null) {
+                gameStatusListener.onGameStatusChanged(GameStatus.LOST);
+            }
+        } else {
+            cellsLeft -= openedCells.size();
+            if (cellsLeft == 0) {
+                status = GameStatus.WON;
+                if (gameStatusListener != null) {
+                    gameStatusListener.onGameStatusChanged(GameStatus.WON);
+                }
+            }
+        }
     }
 }

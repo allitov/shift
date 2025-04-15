@@ -2,6 +2,7 @@ package ru.cft.miner.model;
 
 import ru.cft.miner.model.observer.CellOpeningListener;
 import ru.cft.miner.model.observer.FlagChangeListener;
+import ru.cft.miner.model.observer.GameStatusListener;
 import ru.cft.miner.view.GameType;
 
 public interface GameModel {

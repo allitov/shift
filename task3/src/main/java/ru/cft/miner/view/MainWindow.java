@@ -2,8 +2,10 @@ package ru.cft.miner.view;
 
 import ru.cft.miner.model.CellDto;
 import ru.cft.miner.model.FlagDto;
+import ru.cft.miner.model.GameStatus;
 import ru.cft.miner.model.observer.CellOpeningListener;
 import ru.cft.miner.model.observer.FlagChangeListener;
+import ru.cft.miner.model.observer.GameStatusListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
-public class MainWindow extends JFrame implements CellOpeningListener, FlagChangeListener {
+public class MainWindow extends JFrame implements CellOpeningListener, FlagChangeListener, GameStatusListener {
     private final Container contentPane;
     private final GridBagLayout mainLayout;
 
@@ -220,5 +222,16 @@ public class MainWindow extends JFrame implements CellOpeningListener, FlagChang
             setCellImage(flag.row(), flag.col(), GameImage.CLOSED);
         }
         setBombsCount(flag.flagsRemain());
+    }
+
+    @Override
+    public void onGameStatusChanged(GameStatus gameStatus) {
+        JDialog window;
+        if (gameStatus == GameStatus.WON) {
+            window = new WinWindow(this);
+        } else {
+            window = new LoseWindow(this);
+        }
+        window.setVisible(true);
     }
 }
