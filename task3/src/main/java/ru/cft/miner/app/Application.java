@@ -1,32 +1,29 @@
 package ru.cft.miner.app;
 
+import ru.cft.miner.controller.GameController;
 import ru.cft.miner.controller.GameControllerImpl;
 import ru.cft.miner.model.GameModel;
 import ru.cft.miner.model.GameModelImpl;
-import ru.cft.miner.view.HighScoresWindow;
-import ru.cft.miner.view.LoseWindow;
+import ru.cft.miner.view.ButtonType;
+import ru.cft.miner.view.CellEventListener;
+import ru.cft.miner.view.GameType;
 import ru.cft.miner.view.MainWindow;
-import ru.cft.miner.view.RecordsWindow;
-import ru.cft.miner.view.SettingsWindow;
-import ru.cft.miner.view.WinWindow;
 
 public class Application {
 
     public static void main(String[] args) {
-        // view init
-        MainWindow mainWindow = new MainWindow();
-        SettingsWindow settingsWindow = new SettingsWindow(mainWindow);
-//        RecordsWindow recordsWindow = new RecordsWindow(mainWindow);
-//        LoseWindow loseWindow = new LoseWindow(mainWindow);
-//        WinWindow winWindow = new WinWindow(mainWindow);
-        HighScoresWindow highScoresWindow = new HighScoresWindow(mainWindow);
-
-        mainWindow.setSettingsMenuAction(e -> settingsWindow.setVisible(true));
-        mainWindow.setHighScoresMenuAction(e -> highScoresWindow.setVisible(true));
-        mainWindow.setExitMenuAction(e -> System.exit(0));
-
+        MainWindow view = new MainWindow();
         GameModel model = new GameModelImpl();
-        GameControllerImpl controller = new GameControllerImpl(mainWindow, model);
-        controller.initializeGame();
+        GameControllerImpl controller = new GameControllerImpl(view, model);
+        controller.initGame(GameType.NOVICE);
+        view.setCellListener((x, y, buttonType) -> {
+            switch (buttonType) {
+                case LEFT_BUTTON -> controller.openCell(x, y);
+                case RIGHT_BUTTON -> controller.setFlag(x, y);
+                case MIDDLE_BUTTON -> {/* TODO: not implemented yet */}
+            }
+        });
+        view.setVisible(true);
+        view.setLocationRelativeTo(null);
     }
 }

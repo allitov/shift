@@ -1,5 +1,9 @@
 package ru.cft.miner.model;
 
+import ru.cft.miner.model.observer.CellOpeningListener;
+import ru.cft.miner.model.observer.FlagChangeListener;
+import ru.cft.miner.view.GameType;
+
 public interface GameModel {
 
     void initGame(GameType gameType);
@@ -12,7 +16,11 @@ public interface GameModel {
 
     void removeObserver(GameStatusListener observer);
 
-    void registerObserver(CellStatusListener observer);
+    void registerObserver(CellOpeningListener observer);
 
-    void removeObserver(CellStatusListener observer);
+    void removeObserver(CellOpeningListener observer);
+
+    void registerObserver(FlagChangeListener observer);
+
+    void removeObserver(FlagChangeListener observer);
 }

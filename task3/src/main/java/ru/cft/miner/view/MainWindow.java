@@ -1,11 +1,9 @@
 package ru.cft.miner.view;
 
-import ru.cft.miner.model.Cell;
-import ru.cft.miner.model.CellObserver;
-import ru.cft.miner.model.FlagObserver;
-import ru.cft.miner.model.LoseObserver;
-import ru.cft.miner.model.MineObserver;
-import ru.cft.miner.model.WinObserver;
+import ru.cft.miner.model.CellDto;
+import ru.cft.miner.model.FlagDto;
+import ru.cft.miner.model.observer.CellOpeningListener;
+import ru.cft.miner.model.observer.FlagChangeListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
-public class MainWindow extends JFrame implements CellObserver, FlagObserver, LoseObserver, WinObserver, MineObserver {
+public class MainWindow extends JFrame implements CellOpeningListener, FlagChangeListener {
     private final Container contentPane;
     private final GridBagLayout mainLayout;
 
@@ -202,39 +200,25 @@ public class MainWindow extends JFrame implements CellObserver, FlagObserver, Lo
     }
 
     @Override
-    public void onCellUpdate(List<Cell> cells) {
-        for (Cell cell : cells) {
-            setCellImage(cell.getCol(), cell.getRow(), GameImage.getNumberImage(cell.getMinesAroundCounter()));
+    public void onCellOpening(List<CellDto> cells) {
+        for (var cell : cells) {
+            if (cell.isMine()) {
+                setCellImage(cell.row(), cell.col(), GameImage.BOMB);
+            } else if (cell.minesAround() == 0) {
+                setCellImage(cell.row(), cell.col(), GameImage.EMPTY);
+            } else {
+                setCellImage(cell.row(), cell.col(), GameImage.getNumberImage(cell.minesAround()));
+            }
         }
     }
 
     @Override
-    public void onFlagUpdate(Cell cell) {
-        if (cell.isFlagged()) {
-            setCellImage(cell.getCol(), cell.getRow(), GameImage.MARKED);
+    public void onFlagChange(FlagDto flag) {
+        if (flag.isFlagged()) {
+            setCellImage(flag.row(), flag.col(), GameImage.MARKED);
         } else {
-            setCellImage(cell.getCol(), cell.getRow(), GameImage.CLOSED);
+            setCellImage(flag.row(), flag.col(), GameImage.CLOSED);
         }
-    }
-
-    @Override
-    public void onLose() {
-        LoseWindow loseWindow = new LoseWindow(this);
-        loseWindow.setExitListener(e -> System.exit(0));
-        loseWindow.setNewGameListener(e -> System.out.println("New game"));
-        loseWindow.setVisible(true);
-    }
-
-    @Override
-    public void onWin() {
-        WinWindow winWindow = new WinWindow(this);
-        winWindow.setExitListener(e -> System.exit(0));
-        winWindow.setNewGameListener(e -> System.out.println("New game"));
-        winWindow.setVisible(true);
-    }
-
-    @Override
-    public void onMine(Cell cell) {
-        setCellImage(cell.getCol(), cell.getRow(), GameImage.BOMB);
+        setBombsCount(flag.flagsRemain());
     }
 }

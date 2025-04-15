@@ -110,7 +110,10 @@ public class GameField {
 
         for (int r = row - 1; r <= row + 1; r++) {
             for (int c = col - 1; c <= col + 1; c++) {
-                if (!(r == row && c == col)) {
+                if (r == row && c == col) {
+                    continue;
+                }
+                if (areCoordsValid(r, c)) {
                     field[r][c].incrementMinesAroundCounter();
                 }
             }

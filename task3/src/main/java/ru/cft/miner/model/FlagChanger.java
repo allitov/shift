@@ -16,6 +16,10 @@ public class FlagChanger {
         return field.isCellFlagged(row, col) ? removeFlag(field, row, col) : placeFlag(field, row, col);
     }
 
+    public int getFlagsLeft() {
+        return flagsLeft;
+    }
+
     private boolean placeFlag(GameField field, int row, int col) {
         if (flagsLeft == 0) {
             return false;

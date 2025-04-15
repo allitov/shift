@@ -14,8 +14,7 @@ public class MinesGenerator {
             int col = random.nextInt(cols);
             boolean isSafeSquare = (row >= startRow - 1 && row <= startRow + 1) &&
                     (col >= startCol - 1 && col <= startCol + 1);
-            boolean areCoordsValid = row < rows && col < cols;
-            if (!isSafeSquare && areCoordsValid && !field.isCellMine(row, col)) {
+            if (!isSafeSquare && field.areCoordsValid(row, col) && !field.isCellMine(row, col)) {
                 field.setCellMine(row, col, true);
                 field.changeMineCounters(row, col);
                 minesCount--;
