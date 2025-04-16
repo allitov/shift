@@ -3,6 +3,7 @@ package ru.cft.miner.model;
 import ru.cft.miner.model.observer.CellOpeningListener;
 import ru.cft.miner.model.observer.FlagChangeListener;
 import ru.cft.miner.model.observer.GameStatusListener;
+import ru.cft.miner.model.observer.TimerListener;
 
 public interface GameModel {
 
@@ -23,4 +24,8 @@ public interface GameModel {
     void registerObserver(FlagChangeListener observer);
 
     void removeObserver(FlagChangeListener observer);
+
+    void registerObserver(TimerListener observer);
+
+    void removeObserver(TimerListener observer);
 }

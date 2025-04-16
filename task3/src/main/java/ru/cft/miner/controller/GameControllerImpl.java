@@ -4,6 +4,7 @@ import ru.cft.miner.model.GameModel;
 import ru.cft.miner.model.observer.CellOpeningListener;
 import ru.cft.miner.model.observer.FlagChangeListener;
 import ru.cft.miner.model.observer.GameStatusListener;
+import ru.cft.miner.model.observer.TimerListener;
 import ru.cft.miner.view.GameType;
 import ru.cft.miner.view.GameTypeListener;
 import ru.cft.miner.view.MainWindow;
@@ -22,10 +23,12 @@ public class GameControllerImpl implements GameTypeListener {
         model.registerObserver((CellOpeningListener) view);
         model.registerObserver((FlagChangeListener) view);
         model.registerObserver((GameStatusListener) view);
+        model.registerObserver((TimerListener) view);
     }
 
     public void initGame() {
         view.createGameField(gameType.getRowsCount(), gameType.getColsCount());
+        view.setBombsCount(gameType.getMinesCount());
         model.initGame(gameType.getRowsCount(), gameType.getColsCount(), gameType.getMinesCount());
     }
 
@@ -38,7 +41,6 @@ public class GameControllerImpl implements GameTypeListener {
     }
 
     public void openCell(int row, int col) {
-        System.out.println("Opening cell " + row + ", " + col);
         model.openCell(row, col);
     }
 

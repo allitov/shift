@@ -6,6 +6,7 @@ import ru.cft.miner.model.GameStatus;
 import ru.cft.miner.model.observer.CellOpeningListener;
 import ru.cft.miner.model.observer.FlagChangeListener;
 import ru.cft.miner.model.observer.GameStatusListener;
+import ru.cft.miner.model.observer.TimerListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
-public class MainWindow extends JFrame implements CellOpeningListener, FlagChangeListener, GameStatusListener {
+public class MainWindow extends JFrame implements CellOpeningListener, FlagChangeListener, GameStatusListener, TimerListener {
     private final Container contentPane;
     private final GridBagLayout mainLayout;
 
@@ -83,7 +84,6 @@ public class MainWindow extends JFrame implements CellOpeningListener, FlagChang
     }
 
     public void setCellImage(int x, int y, GameImage gameImage) {
-        System.out.println("x: " + x + ", y: " + y);
         cellButtons[y][x].setIcon(gameImage.getImageIcon());
     }
 
@@ -242,5 +242,10 @@ public class MainWindow extends JFrame implements CellOpeningListener, FlagChang
             window.setExitListener(exitGameListener);
             window.setVisible(true);
         }
+    }
+
+    @Override
+    public void onTimeChanged(int time) {
+        setTimerValue(time);
     }
 }

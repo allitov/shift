@@ -3,6 +3,7 @@ package ru.cft.miner.model;
 import ru.cft.miner.model.observer.CellOpeningListener;
 import ru.cft.miner.model.observer.FlagChangeListener;
 import ru.cft.miner.model.observer.GameStatusListener;
+import ru.cft.miner.model.observer.TimerListener;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class GameModelImpl implements GameModel {
     private FlagChanger flagChanger;
     private final MinesGenerator minesGenerator = new MinesGenerator();
     private final CellOpener cellOpener = new CellOpener();
+    private final Timer timer = new Timer();
 
     private CellOpeningListener cellOpeningListener;
     private GameStatusListener gameStatusListener;
@@ -49,16 +51,14 @@ public class GameModelImpl implements GameModel {
         if (status == GameStatus.INITIALIZED) {
             minesGenerator.generateMines(gameField, minesCount, row, col);
             status = GameStatus.STARTED;
+            timer.start();
         }
 
         if (status != GameStatus.STARTED) {
             return;
         }
 
-        System.out.println("Cell opened: " + row + ", " + col);
-
         List<CellDto> openedCells = cellOpener.openCells(gameField, row, col);
-        System.out.println("Opened cells: " + openedCells.size());
         if (!openedCells.isEmpty() && cellOpeningListener != null) {
             cellOpeningListener.onCellOpening(openedCells);
             checkGameStatus(openedCells);
@@ -95,9 +95,20 @@ public class GameModelImpl implements GameModel {
         flagChangeListener = null;
     }
 
+    @Override
+    public void registerObserver(TimerListener observer) {
+        timer.setListener(observer);
+    }
+
+    @Override
+    public void removeObserver(TimerListener observer) {
+
+    }
+
     private void checkGameStatus(List<CellDto> openedCells) {
         if (openedCells.size() == 1 && openedCells.get(0).isMine()) {
             status = GameStatus.LOST;
+            timer.stop();
             if (gameStatusListener != null) {
                 gameStatusListener.onGameStatusChanged(GameStatus.LOST);
             }
@@ -105,6 +116,7 @@ public class GameModelImpl implements GameModel {
             cellsLeft -= openedCells.size();
             if (cellsLeft == 0) {
                 status = GameStatus.WON;
+                timer.stop();
                 if (gameStatusListener != null) {
                     gameStatusListener.onGameStatusChanged(GameStatus.WON);
                 }
