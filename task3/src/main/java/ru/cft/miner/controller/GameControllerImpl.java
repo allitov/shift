@@ -5,9 +5,10 @@ import ru.cft.miner.model.observer.CellOpeningListener;
 import ru.cft.miner.model.observer.FlagChangeListener;
 import ru.cft.miner.model.observer.GameStatusListener;
 import ru.cft.miner.view.GameType;
+import ru.cft.miner.view.GameTypeListener;
 import ru.cft.miner.view.MainWindow;
 
-public class GameControllerImpl {
+public class GameControllerImpl implements GameTypeListener {
 
     private final MainWindow view;
     private final GameModel model;
@@ -37,6 +38,13 @@ public class GameControllerImpl {
     }
 
     public void openCell(int row, int col) {
+        System.out.println("Opening cell " + row + ", " + col);
         model.openCell(row, col);
+    }
+
+    @Override
+    public void onGameTypeChanged(GameType gameType) {
+        this.gameType = gameType;
+        initGame();
     }
 }

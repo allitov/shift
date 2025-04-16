@@ -1,9 +1,9 @@
 package ru.cft.miner.view;
 
 public enum GameType {
-    NOVICE(10, 10, 10),
-    MEDIUM(20, 20, 20),
-    EXPERT(30, 30, 30);
+    NOVICE(9, 9, 10),
+    MEDIUM(16, 16, 40),
+    EXPERT(16, 30, 99);
 
     private final int rowsCount;
     private final int colsCount;

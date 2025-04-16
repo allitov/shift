@@ -55,7 +55,10 @@ public class GameModelImpl implements GameModel {
             return;
         }
 
+        System.out.println("Cell opened: " + row + ", " + col);
+
         List<CellDto> openedCells = cellOpener.openCells(gameField, row, col);
+        System.out.println("Opened cells: " + openedCells.size());
         if (!openedCells.isEmpty() && cellOpeningListener != null) {
             cellOpeningListener.onCellOpening(openedCells);
             checkGameStatus(openedCells);

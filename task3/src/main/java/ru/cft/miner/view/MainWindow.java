@@ -83,6 +83,7 @@ public class MainWindow extends JFrame implements CellOpeningListener, FlagChang
     }
 
     public void setCellImage(int x, int y, GameImage gameImage) {
+        System.out.println("x: " + x + ", y: " + y);
         cellButtons[y][x].setIcon(gameImage.getImageIcon());
     }
 
@@ -209,11 +210,11 @@ public class MainWindow extends JFrame implements CellOpeningListener, FlagChang
     public void onCellOpening(List<CellDto> cells) {
         for (var cell : cells) {
             if (cell.isMine()) {
-                setCellImage(cell.row(), cell.col(), GameImage.BOMB);
+                setCellImage(cell.col(), cell.row(), GameImage.BOMB);
             } else if (cell.minesAround() == 0) {
-                setCellImage(cell.row(), cell.col(), GameImage.EMPTY);
+                setCellImage(cell.col(), cell.row(), GameImage.EMPTY);
             } else {
-                setCellImage(cell.row(), cell.col(), GameImage.getNumberImage(cell.minesAround()));
+                setCellImage(cell.col(), cell.row(), GameImage.getNumberImage(cell.minesAround()));
             }
         }
     }
@@ -221,9 +222,9 @@ public class MainWindow extends JFrame implements CellOpeningListener, FlagChang
     @Override
     public void onFlagChange(FlagDto flag) {
         if (flag.isFlagged()) {
-            setCellImage(flag.row(), flag.col(), GameImage.MARKED);
+            setCellImage(flag.col(), flag.row(), GameImage.MARKED);
         } else {
-            setCellImage(flag.row(), flag.col(), GameImage.CLOSED);
+            setCellImage(flag.col(), flag.row(), GameImage.CLOSED);
         }
         setBombsCount(flag.flagsRemain());
     }
