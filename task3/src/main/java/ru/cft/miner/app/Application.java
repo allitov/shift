@@ -14,8 +14,8 @@ public class Application {
     public static void main(String[] args) {
         MainWindow view = new MainWindow();
         GameModel model = new GameModelImpl();
-        GameControllerImpl controller = new GameControllerImpl(view, model);
-        controller.initGame(GameType.NOVICE);
+        GameControllerImpl controller = new GameControllerImpl(view, model, GameType.NOVICE);
+        controller.initGame();
         view.setCellListener((x, y, buttonType) -> {
             switch (buttonType) {
                 case LEFT_BUTTON -> controller.openCell(x, y);
@@ -23,6 +23,8 @@ public class Application {
                 case MIDDLE_BUTTON -> {/* TODO: not implemented yet */}
             }
         });
+        view.setExitMenuAction(e -> System.exit(0));
+        view.setNewGameMenuAction(e -> controller.initGame());
         view.setVisible(true);
         view.setLocationRelativeTo(null);
     }

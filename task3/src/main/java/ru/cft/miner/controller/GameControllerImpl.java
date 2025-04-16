@@ -14,18 +14,22 @@ public class GameControllerImpl {
 
     private GameType gameType;
 
-    public GameControllerImpl(MainWindow view, GameModel model) {
+    public GameControllerImpl(MainWindow view, GameModel model, GameType gameType) {
         this.view = view;
         this.model = model;
+        this.gameType = gameType;
         model.registerObserver((CellOpeningListener) view);
         model.registerObserver((FlagChangeListener) view);
         model.registerObserver((GameStatusListener) view);
     }
 
-    public void initGame(GameType gameType) {
-        this.gameType = gameType;
+    public void initGame() {
         view.createGameField(gameType.getRowsCount(), gameType.getColsCount());
-        model.initGame(gameType);
+        model.initGame(gameType.getRowsCount(), gameType.getColsCount(), gameType.getMinesCount());
+    }
+
+    public void changeGameType(GameType gameType) {
+        this.gameType = gameType;
     }
 
     public void setFlag(int row, int col) {

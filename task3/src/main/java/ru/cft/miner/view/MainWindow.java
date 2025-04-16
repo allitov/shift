@@ -23,7 +23,9 @@ public class MainWindow extends JFrame implements CellOpeningListener, FlagChang
     private JMenuItem settingsMenu;
     private JMenuItem exitMenu;
 
-    private CellEventListener listener;
+    private CellEventListener cellEventlistener;
+    private ActionListener newGameListener;
+    private ActionListener exitGameListener;
 
     private JButton[][] cellButtons;
     private JLabel timerLabel;
@@ -59,6 +61,7 @@ public class MainWindow extends JFrame implements CellOpeningListener, FlagChang
     }
 
     public void setNewGameMenuAction(ActionListener listener) {
+        newGameListener = listener;
         newGameMenu.addActionListener(listener);
     }
 
@@ -71,11 +74,12 @@ public class MainWindow extends JFrame implements CellOpeningListener, FlagChang
     }
 
     public void setExitMenuAction(ActionListener listener) {
+        exitGameListener = listener;
         exitMenu.addActionListener(listener);
     }
 
     public void setCellListener(CellEventListener listener) {
-        this.listener = listener;
+        cellEventlistener = listener;
     }
 
     public void setCellImage(int x, int y, GameImage gameImage) {
@@ -118,19 +122,19 @@ public class MainWindow extends JFrame implements CellOpeningListener, FlagChang
                 cellButtons[y][x].addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseReleased(MouseEvent e) {
-                        if (listener == null) {
+                        if (cellEventlistener == null) {
                             return;
                         }
 
                         switch (e.getButton()) {
                             case MouseEvent.BUTTON1:
-                                listener.onMouseClick(x, y, ButtonType.LEFT_BUTTON);
+                                cellEventlistener.onMouseClick(x, y, ButtonType.LEFT_BUTTON);
                                 break;
                             case MouseEvent.BUTTON2:
-                                listener.onMouseClick(x, y, ButtonType.MIDDLE_BUTTON);
+                                cellEventlistener.onMouseClick(x, y, ButtonType.MIDDLE_BUTTON);
                                 break;
                             case MouseEvent.BUTTON3:
-                                listener.onMouseClick(x, y, ButtonType.RIGHT_BUTTON);
+                                cellEventlistener.onMouseClick(x, y, ButtonType.RIGHT_BUTTON);
                                 break;
                             default:
                                 // Other mouse buttons are ignored
@@ -226,12 +230,16 @@ public class MainWindow extends JFrame implements CellOpeningListener, FlagChang
 
     @Override
     public void onGameStatusChanged(GameStatus gameStatus) {
-        JDialog window;
         if (gameStatus == GameStatus.WON) {
-            window = new WinWindow(this);
+            WinWindow window = new WinWindow(this);
+            window.setNewGameListener(newGameListener);
+            window.setExitListener(exitGameListener);
+            window.setVisible(true);
         } else {
-            window = new LoseWindow(this);
+            LoseWindow window = new LoseWindow(this);
+            window.setNewGameListener(newGameListener);
+            window.setExitListener(exitGameListener);
+            window.setVisible(true);
         }
-        window.setVisible(true);
     }
 }

@@ -3,11 +3,10 @@ package ru.cft.miner.model;
 import ru.cft.miner.model.observer.CellOpeningListener;
 import ru.cft.miner.model.observer.FlagChangeListener;
 import ru.cft.miner.model.observer.GameStatusListener;
-import ru.cft.miner.view.GameType;
 
 public interface GameModel {
 
-    void initGame(GameType gameType);
+    void initGame(int rows, int cols, int minesCount);
 
     void changeFlag(int row, int col);
 

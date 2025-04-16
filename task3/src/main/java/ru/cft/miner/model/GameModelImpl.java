@@ -3,7 +3,6 @@ package ru.cft.miner.model;
 import ru.cft.miner.model.observer.CellOpeningListener;
 import ru.cft.miner.model.observer.FlagChangeListener;
 import ru.cft.miner.model.observer.GameStatusListener;
-import ru.cft.miner.view.GameType;
 
 import java.util.List;
 
@@ -23,10 +22,8 @@ public class GameModelImpl implements GameModel {
     private FlagChangeListener flagChangeListener;
 
     @Override
-    public void initGame(GameType gameType) {
-        int rows = gameType.getRowsCount();
-        int cols = gameType.getColsCount();
-        minesCount = gameType.getMinesCount();
+    public void initGame(int rows, int cols, int minesCount) {
+        this.minesCount = minesCount;
 
         gameField = new GameField(rows, cols);
         flagChanger = new FlagChanger(minesCount);
