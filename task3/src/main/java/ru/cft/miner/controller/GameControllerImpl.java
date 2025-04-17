@@ -1,39 +1,41 @@
 package ru.cft.miner.controller;
 
 import ru.cft.miner.model.GameModel;
-import ru.cft.miner.model.observer.CellOpeningListener;
-import ru.cft.miner.model.observer.FlagChangeListener;
-import ru.cft.miner.model.observer.GameStatusListener;
-import ru.cft.miner.model.observer.TimerListener;
 import ru.cft.miner.view.GameType;
-import ru.cft.miner.view.GameTypeListener;
-import ru.cft.miner.view.MainWindow;
+import ru.cft.miner.view.GameView;
 
-public class GameControllerImpl implements GameTypeListener {
+public class GameControllerImpl {
 
-    private final MainWindow view;
+    private final GameView view;
     private final GameModel model;
 
     private GameType gameType;
 
-    public GameControllerImpl(MainWindow view, GameModel model, GameType gameType) {
+    public GameControllerImpl(GameView view, GameModel model, GameType gameType) {
         this.view = view;
         this.model = model;
         this.gameType = gameType;
-        model.registerObserver((CellOpeningListener) view);
-        model.registerObserver((FlagChangeListener) view);
-        model.registerObserver((GameStatusListener) view);
-        model.registerObserver((TimerListener) view);
+
+        view.setNewGameListener(e -> initGame());
+        view.setExitGameListener(e -> System.exit(0));
+        view.setCellEventListener((x, y, buttonType) -> {
+            switch (buttonType) {
+                case LEFT_BUTTON -> openCell(y, x);
+                case RIGHT_BUTTON -> setFlag(y, x);
+                case MIDDLE_BUTTON -> {/* TODO: not implemented yet */}
+            }
+        });
+        view.setGameTypeListener(this::changeGameType);
     }
 
     public void initGame() {
-        view.createGameField(gameType.getRowsCount(), gameType.getColsCount());
-        view.setBombsCount(gameType.getMinesCount());
+        view.drawGameField(gameType.getRowsCount(), gameType.getColsCount(), gameType.getMinesCount());
         model.initGame(gameType.getRowsCount(), gameType.getColsCount(), gameType.getMinesCount());
     }
 
     public void changeGameType(GameType gameType) {
         this.gameType = gameType;
+        initGame();
     }
 
     public void setFlag(int row, int col) {
@@ -42,11 +44,5 @@ public class GameControllerImpl implements GameTypeListener {
 
     public void openCell(int row, int col) {
         model.openCell(row, col);
-    }
-
-    @Override
-    public void onGameTypeChanged(GameType gameType) {
-        this.gameType = gameType;
-        initGame();
     }
 }

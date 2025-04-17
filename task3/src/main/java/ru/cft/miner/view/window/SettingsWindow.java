@@ -1,4 +1,7 @@
-package ru.cft.miner.view;
+package ru.cft.miner.view.window;
+
+import ru.cft.miner.view.GameType;
+import ru.cft.miner.view.listener.GameTypeListener;
 
 import javax.swing.*;
 import java.awt.*;

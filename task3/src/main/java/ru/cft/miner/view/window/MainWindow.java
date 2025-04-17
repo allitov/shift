@@ -1,21 +1,16 @@
-package ru.cft.miner.view;
+package ru.cft.miner.view.window;
 
-import ru.cft.miner.model.CellDto;
-import ru.cft.miner.model.FlagDto;
-import ru.cft.miner.model.GameStatus;
-import ru.cft.miner.model.observer.CellOpeningListener;
-import ru.cft.miner.model.observer.FlagChangeListener;
-import ru.cft.miner.model.observer.GameStatusListener;
-import ru.cft.miner.model.observer.TimerListener;
+import ru.cft.miner.view.ButtonType;
+import ru.cft.miner.view.GameImage;
+import ru.cft.miner.view.listener.CellEventListener;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.List;
 
-public class MainWindow extends JFrame implements CellOpeningListener, FlagChangeListener, GameStatusListener, TimerListener {
+public class MainWindow extends JFrame {
     private final Container contentPane;
     private final GridBagLayout mainLayout;
 
@@ -25,8 +20,6 @@ public class MainWindow extends JFrame implements CellOpeningListener, FlagChang
     private JMenuItem exitMenu;
 
     private CellEventListener cellEventlistener;
-    private ActionListener newGameListener;
-    private ActionListener exitGameListener;
 
     private JButton[][] cellButtons;
     private JLabel timerLabel;
@@ -62,7 +55,6 @@ public class MainWindow extends JFrame implements CellOpeningListener, FlagChang
     }
 
     public void setNewGameMenuAction(ActionListener listener) {
-        newGameListener = listener;
         newGameMenu.addActionListener(listener);
     }
 
@@ -75,7 +67,6 @@ public class MainWindow extends JFrame implements CellOpeningListener, FlagChang
     }
 
     public void setExitMenuAction(ActionListener listener) {
-        exitGameListener = listener;
         exitMenu.addActionListener(listener);
     }
 
@@ -204,48 +195,5 @@ public class MainWindow extends JFrame implements CellOpeningListener, FlagChang
         gbc.weightx = 0.1;
         mainLayout.setConstraints(label, gbc);
         contentPane.add(label);
-    }
-
-    @Override
-    public void onCellOpening(List<CellDto> cells) {
-        for (var cell : cells) {
-            if (cell.isMine()) {
-                setCellImage(cell.col(), cell.row(), GameImage.BOMB);
-            } else if (cell.minesAround() == 0) {
-                setCellImage(cell.col(), cell.row(), GameImage.EMPTY);
-            } else {
-                setCellImage(cell.col(), cell.row(), GameImage.getNumberImage(cell.minesAround()));
-            }
-        }
-    }
-
-    @Override
-    public void onFlagChange(FlagDto flag) {
-        if (flag.isFlagged()) {
-            setCellImage(flag.col(), flag.row(), GameImage.MARKED);
-        } else {
-            setCellImage(flag.col(), flag.row(), GameImage.CLOSED);
-        }
-        setBombsCount(flag.flagsRemain());
-    }
-
-    @Override
-    public void onGameStatusChanged(GameStatus gameStatus) {
-        if (gameStatus == GameStatus.WON) {
-            WinWindow window = new WinWindow(this);
-            window.setNewGameListener(newGameListener);
-            window.setExitListener(exitGameListener);
-            window.setVisible(true);
-        } else {
-            LoseWindow window = new LoseWindow(this);
-            window.setNewGameListener(newGameListener);
-            window.setExitListener(exitGameListener);
-            window.setVisible(true);
-        }
-    }
-
-    @Override
-    public void onTimeChanged(int time) {
-        setTimerValue(time);
     }
 }

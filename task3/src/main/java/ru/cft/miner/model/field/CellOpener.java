@@ -1,4 +1,4 @@
-package ru.cft.miner.model;
+package ru.cft.miner.model.field;
 
 import java.util.ArrayList;
 import java.util.Collections;

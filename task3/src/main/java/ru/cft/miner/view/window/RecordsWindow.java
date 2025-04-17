@@ -1,4 +1,6 @@
-package ru.cft.miner.view;
+package ru.cft.miner.view.window;
+
+import ru.cft.miner.view.listener.RecordNameListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +26,7 @@ public class RecordsWindow extends JDialog {
         setResizable(false);
         pack();
         setLocationRelativeTo(null);
-        setVisible(true);
+//        setVisible(true);
     }
 
     public void setNameListener(RecordNameListener nameListener) {

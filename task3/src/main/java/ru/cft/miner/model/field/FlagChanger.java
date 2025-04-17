@@ -1,4 +1,6 @@
-package ru.cft.miner.model;
+package ru.cft.miner.model.field;
+
+import java.util.List;
 
 public class FlagChanger {
 
@@ -14,6 +16,13 @@ public class FlagChanger {
         }
 
         return field.isCellFlagged(row, col) ? removeFlag(field, row, col) : placeFlag(field, row, col);
+    }
+
+    public void returnOpenedFlags(List<CellDto> openedCells) {
+        long flags = openedCells.stream()
+                .filter(CellDto::isFlagged)
+                .count();
+        flagsLeft += (int) flags;
     }
 
     public int getFlagsLeft() {

@@ -1,4 +1,4 @@
-package ru.cft.miner.model;
+package ru.cft.miner.model.field;
 
 public class GameField {
 

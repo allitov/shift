@@ -1,4 +1,4 @@
-package ru.cft.miner.view;
+package ru.cft.miner.view.window;
 
 import javax.swing.*;
 import java.awt.*;

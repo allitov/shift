@@ -1,9 +1,16 @@
 package ru.cft.miner.model;
 
+import ru.cft.miner.model.field.CellDto;
+import ru.cft.miner.model.field.CellOpener;
+import ru.cft.miner.model.field.FlagChanger;
+import ru.cft.miner.model.field.FlagDto;
+import ru.cft.miner.model.field.GameField;
+import ru.cft.miner.model.field.MinesGenerator;
 import ru.cft.miner.model.observer.CellOpeningListener;
 import ru.cft.miner.model.observer.FlagChangeListener;
 import ru.cft.miner.model.observer.GameStatusListener;
 import ru.cft.miner.model.observer.TimerListener;
+import ru.cft.miner.model.timer.Timer;
 
 import java.util.List;
 
