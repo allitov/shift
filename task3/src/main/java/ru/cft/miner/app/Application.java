@@ -1,5 +1,6 @@
 package ru.cft.miner.app;
 
+import ru.cft.miner.controller.GameController;
 import ru.cft.miner.controller.GameControllerImpl;
 import ru.cft.miner.model.GameModel;
 import ru.cft.miner.model.GameModelImpl;
@@ -11,7 +12,7 @@ public class Application {
     public static void main(String[] args) {
         GameModel model = new GameModelImpl();
         GameView view = new GameViewImpl(model);
-        GameControllerImpl controller = new GameControllerImpl(view, model);
+        GameController controller = new GameControllerImpl(view, model);
         controller.initGame();
         view.show();
     }
