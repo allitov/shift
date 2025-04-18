@@ -9,7 +9,10 @@ import ru.cft.miner.model.field.MinesGenerator;
 import ru.cft.miner.model.observer.CellOpeningListener;
 import ru.cft.miner.model.observer.FlagChangeListener;
 import ru.cft.miner.model.observer.GameStatusListener;
+import ru.cft.miner.model.observer.RecordListener;
 import ru.cft.miner.model.observer.TimerListener;
+import ru.cft.miner.model.record.RecordData;
+import ru.cft.miner.model.record.RecordsManager;
 import ru.cft.miner.model.timer.Timer;
 
 import java.util.List;
@@ -25,10 +28,12 @@ public class GameModelImpl implements GameModel {
     private final MinesGenerator minesGenerator = new MinesGenerator();
     private final CellOpener cellOpener = new CellOpener();
     private final Timer timer = new Timer();
+    private final RecordsManager recordsManager = new RecordsManager();
 
     private CellOpeningListener cellOpeningListener;
     private GameStatusListener gameStatusListener;
     private FlagChangeListener flagChangeListener;
+    private RecordListener recordListener;
 
     @Override
     public void initGame(int rows, int cols, int minesCount) {
@@ -112,6 +117,21 @@ public class GameModelImpl implements GameModel {
 
     }
 
+    @Override
+    public void registerObserver(RecordListener observer) {
+        recordListener = observer;
+    }
+
+    @Override
+    public void removeObserver(RecordListener observer) {
+        recordListener = null;
+    }
+
+    @Override
+    public void saveRecord(String gameType, String name) {
+        recordsManager.addRecord(gameType, name, timer.getTime());
+    }
+
     private void checkGameStatus(List<CellDto> openedCells) {
         if (openedCells.size() == 1 && openedCells.get(0).isMine()) {
             status = GameStatus.LOST;
@@ -124,10 +144,23 @@ public class GameModelImpl implements GameModel {
             if (cellsLeft == 0) {
                 status = GameStatus.WON;
                 timer.stop();
+                boolean isRecord = recordsManager.checkNewRecord("novice", timer.getTime());
+                if (isRecord && recordListener != null) {
+                    recordListener.onRecord();
+
+                }
                 if (gameStatusListener != null) {
                     gameStatusListener.onGameStatusChanged(GameStatus.WON);
                 }
             }
         }
+    }
+
+    public List<RecordData> getAllRecords() {
+        return recordsManager.getAllRecords();
+    }
+
+    public void setRecordListener(RecordListener recordListener) {
+        this.recordListener = recordListener;
     }
 }

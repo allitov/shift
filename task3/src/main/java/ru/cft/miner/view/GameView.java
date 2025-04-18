@@ -7,9 +7,12 @@ import ru.cft.miner.model.field.FlagDto;
 import ru.cft.miner.model.observer.CellOpeningListener;
 import ru.cft.miner.model.observer.FlagChangeListener;
 import ru.cft.miner.model.observer.GameStatusListener;
+import ru.cft.miner.model.observer.RecordListener;
 import ru.cft.miner.model.observer.TimerListener;
+import ru.cft.miner.model.record.RecordData;
 import ru.cft.miner.view.listener.CellEventListener;
 import ru.cft.miner.view.listener.GameTypeListener;
+import ru.cft.miner.view.listener.RecordNameListener;
 import ru.cft.miner.view.window.HighScoresWindow;
 import ru.cft.miner.view.window.LoseWindow;
 import ru.cft.miner.view.window.MainWindow;
@@ -19,8 +22,9 @@ import ru.cft.miner.view.window.WinWindow;
 
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.Optional;
 
-public class GameView implements CellOpeningListener, GameStatusListener, FlagChangeListener, TimerListener {
+public class GameView implements CellOpeningListener, GameStatusListener, FlagChangeListener, TimerListener, RecordListener {
 
     private final MainWindow mainWindow = new MainWindow();
     private final WinWindow winWindow = new WinWindow(mainWindow);
@@ -37,8 +41,12 @@ public class GameView implements CellOpeningListener, GameStatusListener, FlagCh
         model.registerObserver((FlagChangeListener) this);
         model.registerObserver((TimerListener) this);
         model.registerObserver((CellOpeningListener) this);
-        mainWindow.setHighScoresMenuAction(e -> highScoresWindow.setVisible(true));
+        model.registerObserver((RecordListener) this);
         mainWindow.setSettingsMenuAction(e -> settingsWindow.setVisible(true));
+    }
+
+    public void setHighScoresMenuAction(ActionListener actionListener) {
+        mainWindow.setHighScoresMenuAction(actionListener);
     }
 
     public void drawGameField(int rows, int cols, int minesCount) {
@@ -89,6 +97,15 @@ public class GameView implements CellOpeningListener, GameStatusListener, FlagCh
         mainWindow.setTimerValue(time);
     }
 
+    @Override
+    public void onRecord() {
+        recordsWindow.setVisible(true);
+    }
+
+    public void setNameListener(RecordNameListener nameListener) {
+        recordsWindow.setNameListener(nameListener);
+    }
+
     public void setNewGameListener(ActionListener newGameListener) {
         mainWindow.setNewGameMenuAction(newGameListener);
         winWindow.setNewGameListener(newGameListener);
@@ -107,5 +124,36 @@ public class GameView implements CellOpeningListener, GameStatusListener, FlagCh
 
     public void setGameTypeListener(GameTypeListener gameTypeListener) {
         settingsWindow.setGameTypeListener(gameTypeListener);
+    }
+
+    public void showHighScores(List<RecordData> allRecords) {
+        Optional<RecordData> data = allRecords.stream()
+                .filter(record -> record.gameType().equalsIgnoreCase("novice"))
+                .findFirst();
+        if (data.isPresent()) {
+            highScoresWindow.setNoviceRecord(data.get().winnerName(), data.get().timeValue());
+        } else {
+            highScoresWindow.setNoviceRecord("N/A", 0);
+        }
+
+        data = allRecords.stream()
+                .filter(record -> record.gameType().equalsIgnoreCase("medium"))
+                .findFirst();
+        if (data.isPresent()) {
+            highScoresWindow.setMediumRecord(data.get().winnerName(), data.get().timeValue());
+        } else {
+            highScoresWindow.setMediumRecord("N/A", 0);
+        }
+
+        data = allRecords.stream()
+                .filter(record -> record.gameType().equalsIgnoreCase("expert"))
+                .findFirst();
+        if (data.isPresent()) {
+            highScoresWindow.setExpertRecord(data.get().winnerName(), data.get().timeValue());
+        } else {
+            highScoresWindow.setExpertRecord("N/A", 0);
+        }
+
+        highScoresWindow.setVisible(true);
     }
 }

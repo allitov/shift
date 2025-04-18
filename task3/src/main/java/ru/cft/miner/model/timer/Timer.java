@@ -26,4 +26,8 @@ public class Timer {
     public void setListener(TimerListener listener) {
         this.listener = listener;
     }
+
+    public int getTime() {
+        return totalSeconds;
+    }
 }

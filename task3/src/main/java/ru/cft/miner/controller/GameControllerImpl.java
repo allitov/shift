@@ -9,12 +9,11 @@ public class GameControllerImpl {
     private final GameView view;
     private final GameModel model;
 
-    private GameType gameType;
+    private GameType gameType = GameType.NOVICE;
 
-    public GameControllerImpl(GameView view, GameModel model, GameType gameType) {
+    public GameControllerImpl(GameView view, GameModel model) {
         this.view = view;
         this.model = model;
-        this.gameType = gameType;
 
         view.setNewGameListener(e -> initGame());
         view.setExitGameListener(e -> System.exit(0));
@@ -26,6 +25,10 @@ public class GameControllerImpl {
             }
         });
         view.setGameTypeListener(this::changeGameType);
+        view.setNameListener(this::setRecord);
+        view.setHighScoresMenuAction(e -> {
+            view.showHighScores(model.getAllRecords());
+        });
     }
 
     public void initGame() {
@@ -44,5 +47,9 @@ public class GameControllerImpl {
 
     public void openCell(int row, int col) {
         model.openCell(row, col);
+    }
+
+    public void setRecord(String name) {
+        model.saveRecord("novice", name);
     }
 }

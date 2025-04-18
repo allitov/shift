@@ -1,7 +1,7 @@
 package ru.cft.miner.view;
 
 public enum GameType {
-    NOVICE(9, 9, 10),
+    NOVICE(9, 9, 1),
     MEDIUM(16, 16, 40),
     EXPERT(16, 30, 99);
 
