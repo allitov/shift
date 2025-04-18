@@ -17,6 +17,8 @@ public interface GameModel {
 
     void openCell(int row, int col);
 
+    void openCellsAround(int row, int col);
+
     void saveRecord(String gameType, String name);
 
     void registerObserver(GameStatusListener observer);

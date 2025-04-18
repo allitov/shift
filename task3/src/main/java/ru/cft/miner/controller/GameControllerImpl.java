@@ -21,7 +21,7 @@ public class GameControllerImpl {
             switch (buttonType) {
                 case LEFT_BUTTON -> openCell(y, x);
                 case RIGHT_BUTTON -> setFlag(y, x);
-                case MIDDLE_BUTTON -> {/* TODO: not implemented yet */}
+                case MIDDLE_BUTTON -> openCellsAround(y, x);
             }
         });
         view.setGameTypeListener(this::changeGameType);
@@ -29,6 +29,10 @@ public class GameControllerImpl {
         view.setHighScoresMenuAction(e -> {
             view.showHighScores(model.getAllRecords());
         });
+    }
+
+    public void openCellsAround(int y, int x) {
+        model.openCellsAround(y, x);
     }
 
     public void initGame() {

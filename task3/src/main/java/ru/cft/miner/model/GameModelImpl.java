@@ -16,6 +16,7 @@ import ru.cft.miner.model.record.RecordsManager;
 import ru.cft.miner.model.timer.Timer;
 
 import java.util.List;
+import java.util.Optional;
 
 public class GameModelImpl implements GameModel {
 
@@ -72,7 +73,20 @@ public class GameModelImpl implements GameModel {
             return;
         }
 
-        List<CellDto> openedCells = cellOpener.openCells(gameField, row, col);
+        List<CellDto> openedCells = cellOpener.openCell(gameField, row, col);
+        if (!openedCells.isEmpty() && cellOpeningListener != null) {
+            cellOpeningListener.onCellOpening(openedCells);
+            checkGameStatus(openedCells);
+        }
+    }
+
+    @Override
+    public void openCellsAround(int row, int col) {
+        if (status != GameStatus.STARTED) {
+            return;
+        }
+
+        List<CellDto> openedCells = cellOpener.openCellsAround(gameField, row, col);
         if (!openedCells.isEmpty() && cellOpeningListener != null) {
             cellOpeningListener.onCellOpening(openedCells);
             checkGameStatus(openedCells);
@@ -135,7 +149,10 @@ public class GameModelImpl implements GameModel {
     }
 
     private void checkGameStatus(List<CellDto> openedCells) {
-        if (openedCells.size() == 1 && openedCells.get(0).isMine()) {
+        Optional<CellDto> mineCell = openedCells.stream()
+                .filter(CellDto::isMine)
+                .findAny();
+        if (mineCell.isPresent()) {
             status = GameStatus.LOST;
             timer.stop();
             if (gameStatusListener != null) {
