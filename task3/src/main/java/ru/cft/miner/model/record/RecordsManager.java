@@ -15,19 +15,42 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Класс для управления рекордами игры
+ */
 public class RecordsManager {
 
-    private final String fileName = "task3/src/main/resources/records.json";
+    private static final String DEFAULT_RECORDS_PATH = "task3/src/main/resources/records.json";
+    
+    private final String recordsFilePath;
     private final ObjectMapper objectMapper;
-    private List<RecordData> records;
+    private final List<RecordData> records;
 
+    /**
+     * Создает менеджер рекордов с путем к файлу по умолчанию
+     */
     public RecordsManager() {
-        objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-        readData();
+        this(DEFAULT_RECORDS_PATH);
     }
 
+    /**
+     * Создает менеджер рекордов с указанным путем к файлу
+     *
+     * @param recordsFilePath путь к файлу с рекордами
+     */
+    public RecordsManager(String recordsFilePath) {
+        this.recordsFilePath = recordsFilePath;
+        this.objectMapper = configureObjectMapper();
+        this.records = loadRecords();
+    }
+
+    /**
+     * Проверяет, является ли указанное время новым рекордом для данного типа игры
+     *
+     * @param gameType тип игры
+     * @param time время в секундах
+     * @return true, если это новый рекорд, иначе false
+     */
     public boolean checkNewRecord(String gameType, int time) {
         Optional<RecordData> existingRecord = records.stream()
                 .filter(record -> record.gameType().equalsIgnoreCase(gameType))
@@ -36,6 +59,13 @@ public class RecordsManager {
         return existingRecord.map(recordData -> time < recordData.timeValue()).orElse(true);
     }
 
+    /**
+     * Добавляет новый рекорд, если время лучше существующего
+     *
+     * @param gameType тип игры
+     * @param winnerName имя победителя
+     * @param time время в секундах
+     */
     public void addRecord(String gameType, String winnerName, int time) {
         if (!checkNewRecord(gameType, time)) {
             return;
@@ -45,35 +75,55 @@ public class RecordsManager {
 
         records.add(new RecordData(gameType, winnerName, time));
 
-        writeData();
+        saveRecords();
     }
 
-    public void readData() {
-        File file = new File(fileName);
-
-        if (!file.exists()) {
-            records = new ArrayList<>();
-            return;
-        }
-
-        try (InputStream inputStream = new FileInputStream(fileName)) {
-            TypeReference<List<RecordData>> typeReference = new TypeReference<>() {};
-            records = objectMapper.readValue(inputStream, typeReference);
-        } catch (IOException e) {
-            records = new ArrayList<>();
-        }
-    }
-
-    private void writeData() {
-        try (OutputStream outputStream = new FileOutputStream(fileName)) {
-            objectMapper.writeValue(outputStream, records);
-        } catch (IOException e) {
-            System.err.println("Ошибка при записи файла рекордов: " + e.getMessage());
-            throw new RuntimeException("Не удалось сохранить рекорды", e);
-        }
-    }
-
+    /**
+     * Возвращает копию списка всех рекордов
+     *
+     * @return список рекордов
+     */
     public List<RecordData> getAllRecords() {
         return new ArrayList<>(records);
+    }
+
+    /**
+     * Конфигурирует ObjectMapper для работы с JSON
+     */
+    private ObjectMapper configureObjectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+        return mapper;
+    }
+
+    /**
+     * Загружает список рекордов из файла
+     */
+    private List<RecordData> loadRecords() {
+        File file = new File(recordsFilePath);
+
+        if (!file.exists()) {
+            return new ArrayList<>();
+        }
+
+        try (InputStream inputStream = new FileInputStream(recordsFilePath)) {
+            TypeReference<List<RecordData>> typeReference = new TypeReference<>() {};
+            return objectMapper.readValue(inputStream, typeReference);
+        } catch (IOException e) {
+            return new ArrayList<>();
+        }
+    }
+
+    /**
+     * Сохраняет список рекордов в файл
+     */
+    private void saveRecords() {
+        try (OutputStream outputStream = new FileOutputStream(recordsFilePath)) {
+            objectMapper.writeValue(outputStream, records);
+        } catch (IOException e) {
+            throw new RuntimeException("Не удалось сохранить рекорды", e);
+        }
     }
 }
