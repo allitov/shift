@@ -2,40 +2,49 @@ package ru.cft.miner.model;
 
 import ru.cft.miner.model.field.CellDto;
 import ru.cft.miner.model.field.CellOpener;
-import ru.cft.miner.model.field.FlagManager;
 import ru.cft.miner.model.field.FlagDto;
+import ru.cft.miner.model.field.FlagManager;
 import ru.cft.miner.model.field.GameField;
 import ru.cft.miner.model.field.MinesGenerator;
-import ru.cft.miner.model.observer.CellOpeningListener;
-import ru.cft.miner.model.observer.FlagChangeListener;
-import ru.cft.miner.model.observer.GameStatusListener;
-import ru.cft.miner.model.observer.RecordListener;
-import ru.cft.miner.model.observer.TimerListener;
+import ru.cft.miner.model.listener.CellOpeningListener;
+import ru.cft.miner.model.listener.FlagChangeListener;
+import ru.cft.miner.model.listener.GameStatusListener;
+import ru.cft.miner.model.listener.RecordListener;
+import ru.cft.miner.model.listener.TimerListener;
 import ru.cft.miner.model.record.RecordData;
 import ru.cft.miner.model.record.RecordsManager;
 import ru.cft.miner.model.timer.Timer;
 
 import java.util.List;
-import java.util.Optional;
 
+/**
+ * Основная реализация игровой модели
+ */
 public class GameModelImpl implements GameModel {
 
-    private int cellsLeft;
+    private int cellsToOpen;
     private int minesCount;
     private GameStatus status;
     private String gameType;
 
     private GameField gameField;
     private FlagManager flagManager;
-    private final MinesGenerator minesGenerator = new MinesGenerator();
-    private final CellOpener cellOpener = new CellOpener();
-    private final Timer timer = new Timer();
-    private final RecordsManager recordsManager = new RecordsManager();
+    private final MinesGenerator minesGenerator;
+    private final CellOpener cellOpener;
+    private final Timer timer;
+    private final RecordsManager recordsManager;
 
     private CellOpeningListener cellOpeningListener;
     private GameStatusListener gameStatusListener;
     private FlagChangeListener flagChangeListener;
     private RecordListener recordListener;
+
+    public GameModelImpl() {
+        minesGenerator = new MinesGenerator();
+        cellOpener = new CellOpener();
+        timer = new Timer();
+        recordsManager = new RecordsManager();
+    }
 
     @Override
     public void initGame(int rows, int cols, int minesCount, String gameType) {
@@ -44,29 +53,33 @@ public class GameModelImpl implements GameModel {
 
         gameField = new GameField(rows, cols);
         flagManager = new FlagManager(minesCount);
-        cellsLeft = rows * cols - minesCount;
+        cellsToOpen = rows * cols - minesCount;
 
         status = GameStatus.INITIALIZED;
     }
 
     @Override
     public void changeFlag(int row, int col) {
-        if (status != GameStatus.INITIALIZED && status != GameStatus.STARTED) {
+        if (!isGameActive()) {
             return;
         }
 
         boolean isFlagChanged = flagManager.changeFlag(gameField, row, col);
-        if (isFlagChanged && cellOpeningListener != null) {
-            flagChangeListener.onFlagChange(new FlagDto(row, col, gameField.isCellFlagged(row, col), flagManager.getFlagsLeft()));
+        if (isFlagChanged && flagChangeListener != null) {
+            FlagDto flagDto = new FlagDto(
+                row, 
+                col, 
+                gameField.isCellFlagged(row, col), 
+                flagManager.getFlagsLeft()
+            );
+            flagChangeListener.onFlagChange(flagDto);
         }
     }
 
     @Override
     public void openCell(int row, int col) {
         if (status == GameStatus.INITIALIZED) {
-            minesGenerator.generateMines(gameField, minesCount, row, col);
-            status = GameStatus.STARTED;
-            timer.start();
+            startGame(row, col);
         }
 
         if (status != GameStatus.STARTED) {
@@ -92,6 +105,79 @@ public class GameModelImpl implements GameModel {
             checkGameStatus(openedCells);
         }
     }
+
+    @Override
+    public void saveRecord(String gameType, String name) {
+        recordsManager.addRecord(gameType, name, timer.getTime());
+    }
+
+    @Override
+    public List<RecordData> getAllRecords() {
+        return recordsManager.getAllRecords();
+    }
+
+    /**
+     * Проверяет, активна ли игра (инициализирована или запущена)
+     */
+    private boolean isGameActive() {
+        return status == GameStatus.INITIALIZED || status == GameStatus.STARTED;
+    }
+
+    /**
+     * Начинает игру
+     */
+    private void startGame(int firstClickRow, int firstClickCol) {
+        minesGenerator.generateMines(gameField, minesCount, firstClickRow, firstClickCol);
+        status = GameStatus.STARTED;
+        timer.start();
+    }
+
+    /**
+     * Проверяет статус игры после открытия ячеек
+     */
+    private void checkGameStatus(List<CellDto> openedCells) {
+        if (openedCells.stream().anyMatch(CellDto::isMine)) {
+            endGameWithLoss();
+            return;
+        }
+
+        cellsToOpen -= openedCells.size();
+
+        if (cellsToOpen <= 0) {
+            endGameWithWin();
+        }
+    }
+
+    /**
+     * Заканчивает игру с проигрышем
+     */
+    private void endGameWithLoss() {
+        status = GameStatus.LOST;
+        timer.stop();
+        
+        if (gameStatusListener != null) {
+            gameStatusListener.onGameStatusChanged(GameStatus.LOST);
+        }
+    }
+
+    /**
+     * Заканчивает игру с победой
+     */
+    private void endGameWithWin() {
+        status = GameStatus.WON;
+        timer.stop();
+        
+        boolean isRecord = recordsManager.checkNewRecord(gameType, timer.getTime());
+        if (isRecord && recordListener != null) {
+            recordListener.onRecord();
+        }
+        
+        if (gameStatusListener != null) {
+            gameStatusListener.onGameStatusChanged(GameStatus.WON);
+        }
+    }
+
+    // Методы регистрации слушателей
 
     @Override
     public void registerObserver(GameStatusListener observer) {
@@ -130,7 +216,7 @@ public class GameModelImpl implements GameModel {
 
     @Override
     public void removeObserver(TimerListener observer) {
-
+        timer.setListener(null);
     }
 
     @Override
@@ -141,41 +227,5 @@ public class GameModelImpl implements GameModel {
     @Override
     public void removeObserver(RecordListener observer) {
         recordListener = null;
-    }
-
-    @Override
-    public void saveRecord(String gameType, String name) {
-        recordsManager.addRecord(gameType, name, timer.getTime());
-    }
-
-    private void checkGameStatus(List<CellDto> openedCells) {
-        Optional<CellDto> mineCell = openedCells.stream()
-                .filter(CellDto::isMine)
-                .findAny();
-        if (mineCell.isPresent()) {
-            status = GameStatus.LOST;
-            timer.stop();
-            if (gameStatusListener != null) {
-                gameStatusListener.onGameStatusChanged(GameStatus.LOST);
-            }
-        } else {
-            cellsLeft -= openedCells.size();
-            if (cellsLeft == 0) {
-                status = GameStatus.WON;
-                timer.stop();
-                boolean isRecord = recordsManager.checkNewRecord(gameType, timer.getTime());
-                if (isRecord && recordListener != null) {
-                    recordListener.onRecord();
-
-                }
-                if (gameStatusListener != null) {
-                    gameStatusListener.onGameStatusChanged(GameStatus.WON);
-                }
-            }
-        }
-    }
-
-    public List<RecordData> getAllRecords() {
-        return recordsManager.getAllRecords();
     }
 }

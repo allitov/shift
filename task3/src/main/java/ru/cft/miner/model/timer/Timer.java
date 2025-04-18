@@ -1,6 +1,6 @@
 package ru.cft.miner.model.timer;
 
-import ru.cft.miner.model.observer.TimerListener;
+import ru.cft.miner.model.listener.TimerListener;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
