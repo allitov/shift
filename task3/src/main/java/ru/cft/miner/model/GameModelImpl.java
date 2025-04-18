@@ -2,7 +2,7 @@ package ru.cft.miner.model;
 
 import ru.cft.miner.model.field.CellDto;
 import ru.cft.miner.model.field.CellOpener;
-import ru.cft.miner.model.field.FlagChanger;
+import ru.cft.miner.model.field.FlagManager;
 import ru.cft.miner.model.field.FlagDto;
 import ru.cft.miner.model.field.GameField;
 import ru.cft.miner.model.field.MinesGenerator;
@@ -26,7 +26,7 @@ public class GameModelImpl implements GameModel {
     private String gameType;
 
     private GameField gameField;
-    private FlagChanger flagChanger;
+    private FlagManager flagManager;
     private final MinesGenerator minesGenerator = new MinesGenerator();
     private final CellOpener cellOpener = new CellOpener();
     private final Timer timer = new Timer();
@@ -43,7 +43,7 @@ public class GameModelImpl implements GameModel {
         this.minesCount = minesCount;
 
         gameField = new GameField(rows, cols);
-        flagChanger = new FlagChanger(minesCount);
+        flagManager = new FlagManager(minesCount);
         cellsLeft = rows * cols - minesCount;
 
         status = GameStatus.INITIALIZED;
@@ -55,9 +55,9 @@ public class GameModelImpl implements GameModel {
             return;
         }
 
-        boolean isFlagChanged = flagChanger.changeFlag(gameField, row, col);
+        boolean isFlagChanged = flagManager.changeFlag(gameField, row, col);
         if (isFlagChanged && cellOpeningListener != null) {
-            flagChangeListener.onFlagChange(new FlagDto(row, col, gameField.isCellFlagged(row, col), flagChanger.getFlagsLeft()));
+            flagChangeListener.onFlagChange(new FlagDto(row, col, gameField.isCellFlagged(row, col), flagManager.getFlagsLeft()));
         }
     }
 
