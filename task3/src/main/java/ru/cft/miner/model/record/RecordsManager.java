@@ -36,9 +36,9 @@ public class RecordsManager {
         return existingRecord.map(recordData -> time < recordData.timeValue()).orElse(true);
     }
 
-    public boolean addRecord(String gameType, String winnerName, int time) {
+    public void addRecord(String gameType, String winnerName, int time) {
         if (!checkNewRecord(gameType, time)) {
-            return false;
+            return;
         }
 
         records.removeIf(record -> record.gameType().equalsIgnoreCase(gameType));
@@ -46,8 +46,6 @@ public class RecordsManager {
         records.add(new RecordData(gameType, winnerName, time));
 
         writeData();
-
-        return true;
     }
 
     public void readData() {
@@ -77,11 +75,5 @@ public class RecordsManager {
 
     public List<RecordData> getAllRecords() {
         return new ArrayList<>(records);
-    }
-
-    public Optional<RecordData> getRecordByGameType(String gameType) {
-        return records.stream()
-                .filter(record -> record.gameType().equalsIgnoreCase(gameType))
-                .findFirst();
     }
 }

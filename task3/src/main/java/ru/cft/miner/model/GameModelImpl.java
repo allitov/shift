@@ -22,6 +22,7 @@ public class GameModelImpl implements GameModel {
     private int cellsLeft;
     private int minesCount;
     private GameStatus status;
+    private String gameType;
 
     private GameField gameField;
     private FlagChanger flagChanger;
@@ -36,7 +37,8 @@ public class GameModelImpl implements GameModel {
     private RecordListener recordListener;
 
     @Override
-    public void initGame(int rows, int cols, int minesCount) {
+    public void initGame(int rows, int cols, int minesCount, String gameType) {
+        this.gameType = gameType;
         this.minesCount = minesCount;
 
         gameField = new GameField(rows, cols);
@@ -144,7 +146,7 @@ public class GameModelImpl implements GameModel {
             if (cellsLeft == 0) {
                 status = GameStatus.WON;
                 timer.stop();
-                boolean isRecord = recordsManager.checkNewRecord("novice", timer.getTime());
+                boolean isRecord = recordsManager.checkNewRecord(gameType, timer.getTime());
                 if (isRecord && recordListener != null) {
                     recordListener.onRecord();
 
@@ -158,9 +160,5 @@ public class GameModelImpl implements GameModel {
 
     public List<RecordData> getAllRecords() {
         return recordsManager.getAllRecords();
-    }
-
-    public void setRecordListener(RecordListener recordListener) {
-        this.recordListener = recordListener;
     }
 }

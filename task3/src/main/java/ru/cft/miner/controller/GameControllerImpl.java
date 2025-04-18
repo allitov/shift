@@ -33,7 +33,7 @@ public class GameControllerImpl {
 
     public void initGame() {
         view.drawGameField(gameType.getRowsCount(), gameType.getColsCount(), gameType.getMinesCount());
-        model.initGame(gameType.getRowsCount(), gameType.getColsCount(), gameType.getMinesCount());
+        model.initGame(gameType.getRowsCount(), gameType.getColsCount(), gameType.getMinesCount(), gameType.name());
     }
 
     public void changeGameType(GameType gameType) {
@@ -50,6 +50,6 @@ public class GameControllerImpl {
     }
 
     public void setRecord(String name) {
-        model.saveRecord("novice", name);
+        model.saveRecord(gameType.name(), name);
     }
 }

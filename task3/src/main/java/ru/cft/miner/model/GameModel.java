@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface GameModel {
 
-    void initGame(int rows, int cols, int minesCount);
+    void initGame(int rows, int cols, int minesCount, String gameType);
 
     void changeFlag(int row, int col);
 

@@ -128,7 +128,7 @@ public class GameView implements CellOpeningListener, GameStatusListener, FlagCh
 
     public void showHighScores(List<RecordData> allRecords) {
         Optional<RecordData> data = allRecords.stream()
-                .filter(record -> record.gameType().equalsIgnoreCase("novice"))
+                .filter(record -> record.gameType().equalsIgnoreCase(GameType.NOVICE.name()))
                 .findFirst();
         if (data.isPresent()) {
             highScoresWindow.setNoviceRecord(data.get().winnerName(), data.get().timeValue());
@@ -137,7 +137,7 @@ public class GameView implements CellOpeningListener, GameStatusListener, FlagCh
         }
 
         data = allRecords.stream()
-                .filter(record -> record.gameType().equalsIgnoreCase("medium"))
+                .filter(record -> record.gameType().equalsIgnoreCase(GameType.MEDIUM.name()))
                 .findFirst();
         if (data.isPresent()) {
             highScoresWindow.setMediumRecord(data.get().winnerName(), data.get().timeValue());
@@ -146,7 +146,7 @@ public class GameView implements CellOpeningListener, GameStatusListener, FlagCh
         }
 
         data = allRecords.stream()
-                .filter(record -> record.gameType().equalsIgnoreCase("expert"))
+                .filter(record -> record.gameType().equalsIgnoreCase(GameType.EXPERT.name()))
                 .findFirst();
         if (data.isPresent()) {
             highScoresWindow.setExpertRecord(data.get().winnerName(), data.get().timeValue());
