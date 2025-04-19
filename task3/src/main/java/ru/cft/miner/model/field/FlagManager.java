@@ -41,9 +41,10 @@ public class FlagManager {
      * 
      * @param openedCells список открытых ячеек
      */
-    public void returnOpenedFlags(List<CellDto> openedCells) {
+    public void returnOpenedFlags(List<CellDto> openedCells, GameField field) {
         long flagsCount = openedCells.stream()
                 .filter(CellDto::isFlagged)
+                .peek(cell -> field.setCellFlagged(cell.row(), cell.col(), false))
                 .count();
                 
         flagsLeft += (int) flagsCount;

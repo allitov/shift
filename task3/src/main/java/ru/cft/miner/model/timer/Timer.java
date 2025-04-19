@@ -15,12 +15,17 @@ public class Timer {
     private ScheduledFuture<?> future;
 
     public void start() {
-        totalSeconds = 0;
         future = executor.scheduleAtFixedRate(() -> listener.onTimeChanged(++totalSeconds), 1, 1, TimeUnit.SECONDS);
     }
 
+    public void reset() {
+        totalSeconds = 0;
+    }
+
     public void stop() {
-        future.cancel(true);
+        if (future != null) {
+            future.cancel(true);
+        }
     }
 
     public void setListener(TimerListener listener) {

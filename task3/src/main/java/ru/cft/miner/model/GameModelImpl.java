@@ -55,6 +55,9 @@ public class GameModelImpl implements GameModel {
         flagManager = new FlagManager(minesCount);
         cellsToOpen = rows * cols - minesCount;
 
+        timer.stop();
+        timer.reset();
+
         status = GameStatus.INITIALIZED;
     }
 
@@ -88,6 +91,7 @@ public class GameModelImpl implements GameModel {
 
         List<CellDto> openedCells = cellOpener.openCell(gameField, row, col);
         if (!openedCells.isEmpty() && cellOpeningListener != null) {
+            flagManager.returnOpenedFlags(openedCells, gameField);
             cellOpeningListener.onCellOpening(openedCells);
             checkGameStatus(openedCells);
         }
@@ -101,6 +105,7 @@ public class GameModelImpl implements GameModel {
 
         List<CellDto> openedCells = cellOpener.openCellsAround(gameField, row, col);
         if (!openedCells.isEmpty() && cellOpeningListener != null) {
+            flagManager.returnOpenedFlags(openedCells, gameField);
             cellOpeningListener.onCellOpening(openedCells);
             checkGameStatus(openedCells);
         }
