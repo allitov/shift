@@ -280,16 +280,6 @@ public class GameModelImpl implements GameModel {
     }
 
     /**
-     * Удаляет слушателя статуса игры
-     * 
-     * @param observer слушатель статуса игры
-     */
-    @Override
-    public void removeObserver(GameStatusListener observer) {
-        gameStatusListeners.remove(observer);
-    }
-
-    /**
      * Регистрирует нового слушателя открытия ячеек
      * 
      * @param observer слушатель открытия ячеек
@@ -297,16 +287,6 @@ public class GameModelImpl implements GameModel {
     @Override
     public void registerObserver(CellOpeningListener observer) {
         cellOpeningListeners.add(observer);
-    }
-
-    /**
-     * Удаляет слушателя открытия ячеек
-     * 
-     * @param observer слушатель открытия ячеек
-     */
-    @Override
-    public void removeObserver(CellOpeningListener observer) {
-        cellOpeningListeners.remove(observer);
     }
 
     /**
@@ -320,16 +300,6 @@ public class GameModelImpl implements GameModel {
     }
 
     /**
-     * Удаляет слушателя изменения флагов
-     * 
-     * @param observer слушатель изменения флагов
-     */
-    @Override
-    public void removeObserver(FlagChangeListener observer) {
-        flagChangeListeners.remove(observer);
-    }
-
-    /**
      * Регистрирует слушателя таймера
      * 
      * @param observer слушатель таймера
@@ -340,16 +310,6 @@ public class GameModelImpl implements GameModel {
     }
 
     /**
-     * Удаляет слушателя таймера
-     * 
-     * @param observer слушатель таймера
-     */
-    @Override
-    public void removeObserver(TimerListener observer) {
-        timer.setListener(null);
-    }
-
-    /**
      * Регистрирует нового слушателя рекордов
      * 
      * @param observer слушатель рекордов
@@ -357,15 +317,5 @@ public class GameModelImpl implements GameModel {
     @Override
     public void registerObserver(RecordListener observer) {
         recordListeners.add(observer);
-    }
-
-    /**
-     * Удаляет слушателя рекордов
-     * 
-     * @param observer слушатель рекордов
-     */
-    @Override
-    public void removeObserver(RecordListener observer) {
-        recordListeners.remove(observer);
     }
 }

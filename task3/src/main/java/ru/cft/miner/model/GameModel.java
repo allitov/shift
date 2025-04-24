@@ -23,23 +23,13 @@ public interface GameModel {
 
     void registerObserver(GameStatusListener observer);
 
-    void removeObserver(GameStatusListener observer);
-
     void registerObserver(CellOpeningListener observer);
-
-    void removeObserver(CellOpeningListener observer);
 
     void registerObserver(FlagChangeListener observer);
 
-    void removeObserver(FlagChangeListener observer);
-
     void registerObserver(TimerListener observer);
 
-    void removeObserver(TimerListener observer);
-
     void registerObserver(RecordListener observer);
-
-    void removeObserver(RecordListener observer);
 
     List<RecordData> getAllRecords();
 }
