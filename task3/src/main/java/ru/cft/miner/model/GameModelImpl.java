@@ -30,7 +30,6 @@ public class GameModelImpl implements GameModel {
 
     private GameField gameField;
     private FlagManager flagManager;
-    private final MinesGenerator minesGenerator;
     private final Timer timer;
     private final RecordsManager recordsManager;
 
@@ -43,7 +42,6 @@ public class GameModelImpl implements GameModel {
      * Создает новый экземпляр игровой модели и инициализирует необходимые компоненты
      */
     public GameModelImpl() {
-        minesGenerator = new MinesGenerator();
         timer = new Timer();
         recordsManager = new RecordsManager();
     }
@@ -184,7 +182,7 @@ public class GameModelImpl implements GameModel {
      * @param firstClickCol столбец первого клика
      */
     private void startGame(int firstClickRow, int firstClickCol) {
-        minesGenerator.generateMines(gameField, minesCount, firstClickRow, firstClickCol);
+        MinesGenerator.generateMines(gameField, minesCount, firstClickRow, firstClickCol);
         status = GameStatus.STARTED;
         timer.start();
     }

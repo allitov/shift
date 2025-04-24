@@ -5,12 +5,12 @@ import java.util.Random;
 /**
  * Класс для генерации мин на игровом поле
  */
-public class MinesGenerator {
+public final class MinesGenerator {
 
-    private final Random random;
+    private static final Random RANDOM = new Random();
 
-    public MinesGenerator() {
-        random = new Random();
+    private MinesGenerator() {
+        throw new IllegalStateException("Utility class");
     }
 
     /**
@@ -21,14 +21,14 @@ public class MinesGenerator {
      * @param startRow строка первого клика
      * @param startCol столбец первого клика
      */
-    public void generateMines(GameField field, int minesCount, int startRow, int startCol) {
+    public static void generateMines(GameField field, int minesCount, int startRow, int startCol) {
         int rows = field.getRows();
         int cols = field.getCols();
         int remainingMines = minesCount;
         
         while (remainingMines > 0) {
-            int row = random.nextInt(rows);
-            int col = random.nextInt(cols);
+            int row = RANDOM.nextInt(rows);
+            int col = RANDOM.nextInt(cols);
 
             if (isSafeZone(row, col, startRow, startCol)) {
                 continue;
@@ -45,7 +45,7 @@ public class MinesGenerator {
     /**
      * Проверяет, находится ли позиция в безопасной зоне вокруг первого клика
      */
-    private boolean isSafeZone(int row, int col, int startRow, int startCol) {
+    private static boolean isSafeZone(int row, int col, int startRow, int startCol) {
         return (row >= startRow - 1 && row <= startRow + 1) &&
                (col >= startCol - 1 && col <= startCol + 1);
     }
@@ -53,7 +53,7 @@ public class MinesGenerator {
     /**
      * Обновляет счетчики мин вокруг указанной позиции
      */
-    private void updateMineCounters(GameField field, int row, int col) {
+    private static void updateMineCounters(GameField field, int row, int col) {
         field.changeMineCounters(row, col);
     }
 }
