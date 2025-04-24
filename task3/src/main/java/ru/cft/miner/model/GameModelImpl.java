@@ -31,7 +31,6 @@ public class GameModelImpl implements GameModel {
     private GameField gameField;
     private FlagManager flagManager;
     private final MinesGenerator minesGenerator;
-    private final CellOpener cellOpener;
     private final Timer timer;
     private final RecordsManager recordsManager;
 
@@ -45,7 +44,6 @@ public class GameModelImpl implements GameModel {
      */
     public GameModelImpl() {
         minesGenerator = new MinesGenerator();
-        cellOpener = new CellOpener();
         timer = new Timer();
         recordsManager = new RecordsManager();
     }
@@ -114,7 +112,7 @@ public class GameModelImpl implements GameModel {
             return;
         }
 
-        processOpenedCells(cellOpener.openCell(gameField, row, col));
+        processOpenedCells(CellOpener.openCell(gameField, row, col));
     }
 
     /**
@@ -130,7 +128,7 @@ public class GameModelImpl implements GameModel {
             return;
         }
 
-        processOpenedCells(cellOpener.openCellsAround(gameField, row, col));
+        processOpenedCells(CellOpener.openCellsAround(gameField, row, col));
     }
 
     /**

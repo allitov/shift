@@ -9,7 +9,11 @@ import java.util.Queue;
 /**
  * Класс, отвечающий за открытие ячеек на игровом поле
  */
-public class CellOpener {
+public final class CellOpener {
+
+    private CellOpener() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Открывает ячейку по заданным координатам
@@ -19,7 +23,7 @@ public class CellOpener {
      * @param col столбец
      * @return список открытых ячеек
      */
-    public List<CellDto> openCell(GameField field, int row, int col) {
+    public static List<CellDto> openCell(GameField field, int row, int col) {
         if (!isValidCellForOpening(field, row, col)) {
             return Collections.emptyList();
         }
@@ -39,7 +43,7 @@ public class CellOpener {
      * @param col столбец
      * @return список открытых ячеек
      */
-    public List<CellDto> openCellsAround(GameField field, int row, int col) {
+    public static List<CellDto> openCellsAround(GameField field, int row, int col) {
         if (!field.areCoordsValid(row, col) || !canOpenAroundCell(field, row, col)) {
             return Collections.emptyList();
         }
@@ -60,7 +64,7 @@ public class CellOpener {
     /**
      * Проверяет, можно ли открыть ячейку
      */
-    private boolean isValidCellForOpening(GameField field, int row, int col) {
+    private static boolean isValidCellForOpening(GameField field, int row, int col) {
         if (!field.areCoordsValid(row, col)) {
             return false;
         }
@@ -70,7 +74,7 @@ public class CellOpener {
     /**
      * Проверяет, можно ли открыть соседнюю ячейку
      */
-    private boolean isNeighborCellOpenable(GameField field, int row, int col) {
+    private static boolean isNeighborCellOpenable(GameField field, int row, int col) {
         return field.areCoordsValid(row, col) && 
                !field.isCellRevealed(row, col) && 
                !field.isCellFlagged(row, col);
@@ -83,7 +87,7 @@ public class CellOpener {
      * @param field игровое поле
      * @return список открытых ячеек
      */
-    private List<CellDto> openField(Queue<CellDto> queue, GameField field) {
+    private static List<CellDto> openField(Queue<CellDto> queue, GameField field) {
         List<CellDto> cellsToOpen = new ArrayList<>();
         
         while (!queue.isEmpty()) {
@@ -104,7 +108,7 @@ public class CellOpener {
     /**
      * Обрабатывает соседние ячейки текущей ячейки
      */
-    private void processNeighbors(CellDto currentCell, GameField field, Queue<CellDto> queue) {
+    private static void processNeighbors(CellDto currentCell, GameField field, Queue<CellDto> queue) {
         for (int r = currentCell.row() - 1; r <= currentCell.row() + 1; r++) {
             for (int c = currentCell.col() - 1; c <= currentCell.col() + 1; c++) {
                 if (!field.areCoordsValid(r, c) || field.isCellRevealed(r, c)) {
@@ -121,7 +125,7 @@ public class CellOpener {
      * Проверяет, можно ли открыть ячейки вокруг заданной ячейки
      * (если количество установленных флагов равно количеству мин вокруг)
      */
-    private boolean canOpenAroundCell(GameField field, int row, int col) {
+    private static boolean canOpenAroundCell(GameField field, int row, int col) {
         if (!field.isCellRevealed(row, col) || 
             field.isCellFlagged(row, col) || 
             field.getCellMinesAroundCounter(row, col) == 0) {
@@ -134,7 +138,7 @@ public class CellOpener {
     /**
      * Подсчитывает количество флагов вокруг ячейки
      */
-    private int countFlagsAround(GameField field, int row, int col) {
+    private static int countFlagsAround(GameField field, int row, int col) {
         int flagsCount = 0;
         
         for (int r = row - 1; r <= row + 1; r++) {
