@@ -6,25 +6,28 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Timer {
 
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private final AtomicInteger totalSeconds = new AtomicInteger(0);
     private TimerListener listener;
-    private int totalSeconds;
-    private ScheduledFuture<?> future;
+    private ScheduledFuture<?> runningTimer;
 
     public void start() {
-        future = executor.scheduleAtFixedRate(() -> listener.onTimeChanged(++totalSeconds), 1, 1, TimeUnit.SECONDS);
+        runningTimer = executor.scheduleAtFixedRate(() -> listener.onTimeChanged(totalSeconds.incrementAndGet()),
+                1, 1, TimeUnit.SECONDS
+        );
     }
 
     public void reset() {
-        totalSeconds = 0;
+        totalSeconds.set(0);
     }
 
     public void stop() {
-        if (future != null) {
-            future.cancel(true);
+        if (runningTimer != null) {
+            runningTimer.cancel(true);
         }
     }
 
@@ -33,6 +36,6 @@ public class Timer {
     }
 
     public int getTime() {
-        return totalSeconds;
+        return totalSeconds.get();
     }
 }
