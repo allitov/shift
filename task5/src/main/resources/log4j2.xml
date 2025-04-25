@@ -3,11 +3,11 @@
     <Appenders>
         <Console name="ConsoleAppender" target="SYSTEM_OUT">
             <PatternLayout
-                    pattern="%d [%-10t] %-5level %logger{36} - %msg%n%throwable"/>
+                    pattern="%d [%-11t] %-5level %msg%n%throwable"/>
         </Console>
         <File name="FileAppender" fileName="./output.log" append="false">
             <PatternLayout
-                    pattern="%d [%-10t] %-5level %logger{36} - %msg%n%throwable"/>
+                    pattern="%d [%-10t] %-5level %msg%n%throwable"/>
         </File>
     </Appenders>
     <Loggers>

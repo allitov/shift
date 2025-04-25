@@ -17,7 +17,7 @@ public class ResourceStorage {
 
     public synchronized void put(Resource resource, int producerId) throws InterruptedException {
         while (storage.size() == maxSize) {
-            log.info("Производитель {} ожидает: склад полон.", producerId);
+            log.info("Производитель {} ожидает: склад полон", producerId);
             wait();
         }
         storage.offer(resource);
@@ -28,7 +28,7 @@ public class ResourceStorage {
 
     public synchronized Resource take(int consumerId) throws InterruptedException {
         while (storage.isEmpty()) {
-            log.info("Потребитель {} ожидает: склад пуст.", consumerId);
+            log.info("Потребитель {} ожидает: склад пуст", consumerId);
             wait();
         }
         Resource resource = storage.poll();

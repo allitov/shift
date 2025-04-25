@@ -33,7 +33,7 @@ public class Producer implements Runnable {
     
     private synchronized Resource createResource() {
         Resource resource = new Resource(++resourceCounter);
-        log.info("Производитель {} произвел ресурс {}.", id, resource.id());
+        log.info("Производитель {} произвел ресурс {}", id, resource.id());
 
         return resource;
     }
