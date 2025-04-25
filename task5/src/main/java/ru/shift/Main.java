@@ -28,7 +28,7 @@ public class Main {
                     ++producerIdCounter,
                     storage,
                     config.getProducerTime()
-            )).start();
+            ), "Producer-" + producerIdCounter).start();
         }
     }
 
@@ -38,7 +38,7 @@ public class Main {
                     ++consumerIdCounter,
                     storage,
                     config.getConsumerTime()
-            )).start();
+            ), "Consumer-" + consumerIdCounter).start();
         }
     }
 }
