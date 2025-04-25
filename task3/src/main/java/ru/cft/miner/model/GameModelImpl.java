@@ -9,11 +9,7 @@ import ru.cft.miner.model.field.MinesGenerator;
 import ru.cft.miner.model.listener.CellOpeningListener;
 import ru.cft.miner.model.listener.FlagChangeListener;
 import ru.cft.miner.model.listener.GameStatusListener;
-import ru.cft.miner.model.listener.RecordListener;
-import ru.cft.miner.model.listener.TimerListener;
-import ru.cft.miner.gameutils.record.RecordData;
-import ru.cft.miner.gameutils.record.RecordsManager;
-import ru.cft.miner.gameutils.timer.Timer;
+import ru.cft.miner.model.listener.GameSummaryListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,21 +26,11 @@ public class GameModelImpl implements GameModel {
 
     private GameField gameField;
     private FlagManager flagManager;
-    private final Timer timer;
-    private final RecordsManager recordsManager;
 
     private final List<CellOpeningListener> cellOpeningListeners = new ArrayList<>();
     private final List<GameStatusListener> gameStatusListeners = new ArrayList<>();
     private final List<FlagChangeListener> flagChangeListeners = new ArrayList<>();
-    private final List<RecordListener> recordListeners = new ArrayList<>();
-
-    /**
-     * Создает новый экземпляр игровой модели и инициализирует необходимые компоненты
-     */
-    public GameModelImpl() {
-        timer = new Timer();
-        recordsManager = new RecordsManager();
-    }
+    private final List<GameSummaryListener> gameSummaryListeners = new ArrayList<>();
 
     /**
      * Инициализирует игру с указанными параметрами
@@ -63,10 +49,8 @@ public class GameModelImpl implements GameModel {
         flagManager = new FlagManager(minesCount);
         cellsToOpen = rows * cols - minesCount;
 
-        timer.stop();
-        timer.reset();
-
         status = GameStatus.INITIALIZED;
+        notifyGameStatusListeners(GameStatus.INITIALIZED);
     }
 
     /**
@@ -130,27 +114,6 @@ public class GameModelImpl implements GameModel {
     }
 
     /**
-     * Сохраняет новый рекорд с указанным именем игрока
-     * 
-     * @param gameType тип игры
-     * @param name имя игрока
-     */
-    @Override
-    public void saveRecord(String gameType, String name) {
-        recordsManager.addRecord(gameType, name, timer.getTime());
-    }
-
-    /**
-     * Получает список всех рекордов
-     * 
-     * @return список данных о рекордах
-     */
-    @Override
-    public List<RecordData> getAllRecords() {
-        return recordsManager.getAllRecords();
-    }
-
-    /**
      * Обрабатывает список открытых ячеек: снимает флаги, уведомляет слушателей
      * и проверяет статус игры
      *
@@ -184,7 +147,7 @@ public class GameModelImpl implements GameModel {
     private void startGame(int firstClickRow, int firstClickCol) {
         MinesGenerator.generateMines(gameField, minesCount, firstClickRow, firstClickCol);
         status = GameStatus.STARTED;
-        timer.start();
+        notifyGameStatusListeners(GameStatus.STARTED);
     }
 
     /**
@@ -211,7 +174,6 @@ public class GameModelImpl implements GameModel {
      */
     private void endGameWithLoss() {
         status = GameStatus.LOST;
-        timer.stop();
         notifyGameStatusListeners(GameStatus.LOST);
     }
 
@@ -221,13 +183,7 @@ public class GameModelImpl implements GameModel {
      */
     private void endGameWithWin() {
         status = GameStatus.WON;
-        timer.stop();
-        
-        boolean isRecord = recordsManager.checkNewRecord(gameType, timer.getTime());
-        if (isRecord) {
-            notifyRecordListeners();
-        }
-        
+        notifyGameSummaryListeners(gameType);
         notifyGameStatusListeners(GameStatus.WON);
     }
 
@@ -257,12 +213,9 @@ public class GameModelImpl implements GameModel {
     private void notifyFlagChangeListeners(FlagDto flagDto) {
         flagChangeListeners.forEach(listener -> listener.onFlagChange(flagDto));
     }
-    
-    /**
-     * Уведомляет всех слушателей о новом рекорде
-     */
-    private void notifyRecordListeners() {
-        recordListeners.forEach(RecordListener::onRecord);
+
+    private void notifyGameSummaryListeners(String gameType) {
+        gameSummaryListeners.forEach(listener -> listener.onGameSummary(gameType));
     }
 
     /**
@@ -295,23 +248,8 @@ public class GameModelImpl implements GameModel {
         flagChangeListeners.add(observer);
     }
 
-    /**
-     * Регистрирует слушателя таймера
-     * 
-     * @param observer слушатель таймера
-     */
     @Override
-    public void registerObserver(TimerListener observer) {
-        timer.setListener(observer);
-    }
-
-    /**
-     * Регистрирует нового слушателя рекордов
-     * 
-     * @param observer слушатель рекордов
-     */
-    @Override
-    public void registerObserver(RecordListener observer) {
-        recordListeners.add(observer);
+    public void registerObserver(GameSummaryListener observer) {
+        gameSummaryListeners.add(observer);
     }
 }

@@ -1,5 +1,9 @@
 package ru.cft.miner.gameutils.record;
 
+import ru.cft.miner.gameutils.timer.Timer;
+import ru.cft.miner.model.listener.GameSummaryListener;
+import ru.cft.miner.model.listener.RecordListener;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -7,29 +11,32 @@ import java.util.Optional;
 /**
  * Класс для управления рекордами игры
  */
-public class RecordsManager {
+public class RecordsManager implements GameSummaryListener {
 
     private final RecordsSerializer recordsSerializer;
     private final List<RecordData> records;
+    private final Timer timer;
+    private final List<RecordListener> recordListeners = new ArrayList<>();
 
-    public RecordsManager() {
+    public RecordsManager(Timer timer) {
         this.recordsSerializer = new RecordsSerializer();
         this.records = recordsSerializer.loadRecords();
+        this.timer = timer;
     }
 
     /**
      * Проверяет, является ли указанное время новым рекордом для данного типа игры
      *
      * @param gameType тип игры
-     * @param time время в секундах
-     * @return true, если это новый рекорд, иначе false
      */
-    public boolean checkNewRecord(String gameType, int time) {
+    public void checkNewRecord(String gameType) {
         Optional<RecordData> existingRecord = records.stream()
                 .filter(record -> record.gameType().equalsIgnoreCase(gameType))
                 .findFirst();
 
-        return existingRecord.map(recordData -> time < recordData.timeValue()).orElse(true);
+        if (existingRecord.map(recordData -> timer.getTime() < recordData.timeValue()).orElse(true)) {
+            notifyRecordListeners();
+        }
     }
 
     /**
@@ -37,16 +44,11 @@ public class RecordsManager {
      *
      * @param gameType тип игры
      * @param winnerName имя победителя
-     * @param time время в секундах
      */
-    public void addRecord(String gameType, String winnerName, int time) {
-        if (!checkNewRecord(gameType, time)) {
-            return;
-        }
-
+    public void addRecord(String gameType, String winnerName) {
         records.removeIf(record -> record.gameType().equalsIgnoreCase(gameType));
 
-        records.add(new RecordData(gameType, winnerName, time));
+        records.add(new RecordData(gameType, winnerName, timer.getTime()));
 
         recordsSerializer.saveRecords(records);
     }
@@ -58,5 +60,19 @@ public class RecordsManager {
      */
     public List<RecordData> getAllRecords() {
         return new ArrayList<>(records);
+    }
+
+    @Override
+    public void onGameSummary(String gameType) {
+        timer.stop();
+        checkNewRecord(gameType);
+    }
+
+    public void registerObserver(RecordListener observer) {
+        recordListeners.add(observer);
+    }
+
+    public void notifyRecordListeners() {
+        recordListeners.forEach(RecordListener::onRecord);
     }
 }

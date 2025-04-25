@@ -1,5 +1,7 @@
 package ru.cft.miner.controller;
 
+import ru.cft.miner.gameutils.record.RecordsManager;
+import ru.cft.miner.gameutils.timer.Timer;
 import ru.cft.miner.model.GameModel;
 import ru.cft.miner.view.ButtonType;
 import ru.cft.miner.view.GameType;
@@ -13,6 +15,8 @@ public class GameControllerImpl implements GameController {
 
     private final GameView view;
     private final GameModel model;
+    private final RecordsManager recordsManager;
+
     private GameType gameType;
 
     /**
@@ -21,9 +25,12 @@ public class GameControllerImpl implements GameController {
      * @param view представление игры
      * @param model модель игры
      */
-    public GameControllerImpl(GameView view, GameModel model) {
+    public GameControllerImpl(GameView view, GameModel model, Timer timer, RecordsManager recordsManager) {
+        this.recordsManager = recordsManager;
         this.view = view;
         this.model = model;
+        model.registerObserver(recordsManager);
+        model.registerObserver(timer);
         this.gameType = GameType.NOVICE;
 
         initializeEventListeners();
@@ -93,7 +100,7 @@ public class GameControllerImpl implements GameController {
      * @param name имя игрока
      */
     public void setRecord(String name) {
-        model.saveRecord(gameType.name(), name);
+        recordsManager.addRecord(gameType.name(), name);
     }
 
     /**
@@ -110,7 +117,7 @@ public class GameControllerImpl implements GameController {
 
         view.setNameListener(this::setRecord);
 
-        view.setHighScoresMenuAction(e -> view.showHighScores(model.getAllRecords()));
+        view.setHighScoresMenuAction(e -> view.showHighScores(recordsManager.getAllRecords()));
     }
 
     /**

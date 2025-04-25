@@ -1,5 +1,7 @@
 package ru.cft.miner.view;
 
+import ru.cft.miner.gameutils.record.RecordsManager;
+import ru.cft.miner.gameutils.timer.Timer;
 import ru.cft.miner.model.GameModel;
 import ru.cft.miner.model.GameStatus;
 import ru.cft.miner.model.field.CellDto;
@@ -41,7 +43,7 @@ public class GameViewImpl implements GameView, CellOpeningListener, GameStatusLi
      * 
      * @param model игровая модель
      */
-    public GameViewImpl(GameModel model) {
+    public GameViewImpl(GameModel model, Timer timer, RecordsManager recordManager) {
         mainWindow = new MainWindow();
         winWindow = new WinWindow(mainWindow);
         loseWindow = new LoseWindow(mainWindow);
@@ -49,7 +51,7 @@ public class GameViewImpl implements GameView, CellOpeningListener, GameStatusLi
         highScoresWindow = new HighScoresWindow(mainWindow);
         recordsWindow = new RecordsWindow(mainWindow);
 
-        registerAsModelObserver(model);
+        registerAsModelObserver(model, timer, recordManager);
 
         mainWindow.setSettingsMenuAction(e -> settingsWindow.setVisible(true));
     }
@@ -189,7 +191,7 @@ public class GameViewImpl implements GameView, CellOpeningListener, GameStatusLi
     public void onGameStatusChanged(GameStatus gameStatus) {
         if (gameStatus == GameStatus.WON) {
             winWindow.setVisible(true);
-        } else {
+        } else if (gameStatus == GameStatus.LOST) {
             loseWindow.setVisible(true);
         }
     }
@@ -233,12 +235,12 @@ public class GameViewImpl implements GameView, CellOpeningListener, GameStatusLi
      *
      * @param model игровая модель
      */
-    private void registerAsModelObserver(GameModel model) {
+    private void registerAsModelObserver(GameModel model, Timer timer, RecordsManager recordManager) {
         model.registerObserver((GameStatusListener) this);
         model.registerObserver((FlagChangeListener) this);
-        model.registerObserver((TimerListener) this);
         model.registerObserver((CellOpeningListener) this);
-        model.registerObserver((RecordListener) this);
+        timer.registerObserver(this);
+        recordManager.registerObserver(this);
     }
 
     /**

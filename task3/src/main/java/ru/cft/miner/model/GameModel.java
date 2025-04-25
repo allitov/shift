@@ -3,11 +3,7 @@ package ru.cft.miner.model;
 import ru.cft.miner.model.listener.CellOpeningListener;
 import ru.cft.miner.model.listener.FlagChangeListener;
 import ru.cft.miner.model.listener.GameStatusListener;
-import ru.cft.miner.model.listener.RecordListener;
-import ru.cft.miner.model.listener.TimerListener;
-import ru.cft.miner.gameutils.record.RecordData;
-
-import java.util.List;
+import ru.cft.miner.model.listener.GameSummaryListener;
 
 public interface GameModel {
 
@@ -19,17 +15,11 @@ public interface GameModel {
 
     void openCellsAround(int row, int col);
 
-    void saveRecord(String gameType, String name);
-
     void registerObserver(GameStatusListener observer);
 
     void registerObserver(CellOpeningListener observer);
 
     void registerObserver(FlagChangeListener observer);
 
-    void registerObserver(TimerListener observer);
-
-    void registerObserver(RecordListener observer);
-
-    List<RecordData> getAllRecords();
+    void registerObserver(GameSummaryListener observer);
 }
