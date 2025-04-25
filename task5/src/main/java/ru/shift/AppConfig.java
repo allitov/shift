@@ -16,6 +16,7 @@ public class AppConfig {
     private long producerTime;
     private long consumerTime;
     private int storageSize;
+    private long workTime;
 
     public AppConfig() {
         loadConfig();
@@ -34,6 +35,7 @@ public class AppConfig {
             producerTime = Long.parseLong(config.getProperty("producerTime", "1000"));
             consumerTime = Long.parseLong(config.getProperty("consumerTime", "1500"));
             storageSize = Integer.parseInt(config.getProperty("storageSize", "5"));
+            workTime = Long.parseLong(config.getProperty("workTime", "10000"));
         } catch (IOException ex) {
             log.error("Ошибка во время чтения config.properties");
             System.exit(1);

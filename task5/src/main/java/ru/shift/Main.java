@@ -19,7 +19,7 @@ public class Main {
         createConsumers();
 
         try {
-            Thread.sleep(3000);
+            Thread.sleep(config.getWorkTime());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
