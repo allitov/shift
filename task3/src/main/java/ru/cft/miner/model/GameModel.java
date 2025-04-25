@@ -5,7 +5,7 @@ import ru.cft.miner.model.listener.FlagChangeListener;
 import ru.cft.miner.model.listener.GameStatusListener;
 import ru.cft.miner.model.listener.RecordListener;
 import ru.cft.miner.model.listener.TimerListener;
-import ru.cft.miner.model.record.RecordData;
+import ru.cft.miner.gameutils.record.RecordData;
 
 import java.util.List;
 

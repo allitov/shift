@@ -1,4 +1,4 @@
-package ru.cft.miner.model.timer;
+package ru.cft.miner.gameutils.timer;
 
 import ru.cft.miner.model.listener.TimerListener;
 

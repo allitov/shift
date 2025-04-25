@@ -1,6 +1,6 @@
 package ru.cft.miner.view;
 
-import ru.cft.miner.model.record.RecordData;
+import ru.cft.miner.gameutils.record.RecordData;
 import ru.cft.miner.view.listener.CellEventListener;
 import ru.cft.miner.view.listener.GameTypeListener;
 import ru.cft.miner.view.listener.RecordNameListener;

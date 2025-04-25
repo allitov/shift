@@ -1,4 +1,4 @@
-package ru.cft.miner.model.record;
+package ru.cft.miner.gameutils.record;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
