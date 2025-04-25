@@ -42,6 +42,8 @@ public class GameViewImpl implements GameView, CellOpeningListener, GameStatusLi
      * Создает представление игры и связывает его с моделью
      * 
      * @param model игровая модель
+     * @param timer таймер игры
+     * @param recordManager менеджер рекордов
      */
     public GameViewImpl(GameModel model, Timer timer, RecordsManager recordManager) {
         mainWindow = new MainWindow();
@@ -234,6 +236,8 @@ public class GameViewImpl implements GameView, CellOpeningListener, GameStatusLi
      * Регистрирует представление как слушателя различных событий модели
      *
      * @param model игровая модель
+     * @param timer таймер игры
+     * @param recordManager менеджер рекордов
      */
     private void registerAsModelObserver(GameModel model, Timer timer, RecordsManager recordManager) {
         model.registerObserver((GameStatusListener) this);

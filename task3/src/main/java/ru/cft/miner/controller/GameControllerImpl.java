@@ -1,7 +1,6 @@
 package ru.cft.miner.controller;
 
 import ru.cft.miner.gameutils.record.RecordsManager;
-import ru.cft.miner.gameutils.timer.Timer;
 import ru.cft.miner.model.GameModel;
 import ru.cft.miner.view.ButtonType;
 import ru.cft.miner.view.GameType;
@@ -24,13 +23,12 @@ public class GameControllerImpl implements GameController {
      *
      * @param view представление игры
      * @param model модель игры
+     * @param recordsManager менеджер рекордов
      */
-    public GameControllerImpl(GameView view, GameModel model, Timer timer, RecordsManager recordsManager) {
+    public GameControllerImpl(GameView view, GameModel model, RecordsManager recordsManager) {
         this.recordsManager = recordsManager;
         this.view = view;
         this.model = model;
-        model.registerObserver(recordsManager);
-        model.registerObserver(timer);
         this.gameType = GameType.NOVICE;
 
         initializeEventListeners();

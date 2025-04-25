@@ -12,11 +12,11 @@ import ru.cft.miner.view.GameViewImpl;
 public class Application {
 
     public static void main(String[] args) {
-        Timer timer = new Timer();
-        RecordsManager recordsManager = new RecordsManager(timer);
         GameModel model = new GameModelImpl();
+        Timer timer = new Timer(model);
+        RecordsManager recordsManager = new RecordsManager(model, timer);
         GameView view = new GameViewImpl(model, timer, recordsManager);
-        GameController controller = new GameControllerImpl(view, model, timer, recordsManager);
+        GameController controller = new GameControllerImpl(view, model, recordsManager);
         controller.initGame();
         view.show();
     }

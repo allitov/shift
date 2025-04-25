@@ -169,7 +169,7 @@ public class GameModelImpl implements GameModel {
     }
 
     /**
-     * Заканчивает игру с проигрышем, останавливает таймер
+     * Заканчивает игру с проигрышем
      * и уведомляет слушателей об изменении статуса
      */
     private void endGameWithLoss() {
@@ -178,7 +178,7 @@ public class GameModelImpl implements GameModel {
     }
 
     /**
-     * Заканчивает игру с победой, останавливает таймер, проверяет рекорд
+     * Заканчивает игру с победой
      * и уведомляет слушателей об изменении статуса
      */
     private void endGameWithWin() {
@@ -248,6 +248,11 @@ public class GameModelImpl implements GameModel {
         flagChangeListeners.add(observer);
     }
 
+    /**
+     * Регистрирует нового слушателя подведения итогов игры
+     *
+     * @param observer слушатель подведения итогов
+     */
     @Override
     public void registerObserver(GameSummaryListener observer) {
         gameSummaryListeners.add(observer);

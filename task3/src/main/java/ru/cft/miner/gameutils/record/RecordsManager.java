@@ -1,6 +1,7 @@
 package ru.cft.miner.gameutils.record;
 
 import ru.cft.miner.gameutils.timer.Timer;
+import ru.cft.miner.model.GameModel;
 import ru.cft.miner.model.listener.GameSummaryListener;
 import ru.cft.miner.model.listener.RecordListener;
 
@@ -18,10 +19,11 @@ public class RecordsManager implements GameSummaryListener {
     private final Timer timer;
     private final List<RecordListener> recordListeners = new ArrayList<>();
 
-    public RecordsManager(Timer timer) {
+    public RecordsManager(GameModel model, Timer timer) {
         this.recordsSerializer = new RecordsSerializer();
         this.records = recordsSerializer.loadRecords();
         this.timer = timer;
+        registerAsModelObserver(model);
     }
 
     /**
@@ -74,5 +76,14 @@ public class RecordsManager implements GameSummaryListener {
 
     public void notifyRecordListeners() {
         recordListeners.forEach(RecordListener::onRecord);
+    }
+
+    /**
+     * Регистрирует представление как слушателя различных событий модели
+     *
+     * @param model игровая модель
+     */
+    private void registerAsModelObserver(GameModel model) {
+        model.registerObserver(this);
     }
 }
