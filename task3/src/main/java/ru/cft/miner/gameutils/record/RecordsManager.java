@@ -20,7 +20,7 @@ import java.util.Optional;
  */
 public class RecordsManager {
 
-    private static final String DEFAULT_RECORDS_PATH = "task3/src/main/resources/records.json";
+    private static final String DEFAULT_RECORDS_PATH = "./records.json";
     
     private final String recordsFilePath;
     private final ObjectMapper objectMapper;
