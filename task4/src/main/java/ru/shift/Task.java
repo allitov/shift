@@ -3,46 +3,49 @@ package ru.shift;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-import java.util.concurrent.RecursiveTask;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 
 @Log4j2
 @RequiredArgsConstructor
-public class Task extends RecursiveTask<Double> {
+public class Task {
     
     private final long start;
     private final long end;
     private final long threshold;
     private final Formula formula;
 
-    @Override
-    protected Double compute() {
-        if (end - start <= threshold) {
-            return computeDirectly();
-        } else {
-            return splitAndCompute();
-        }
+    public Double compute(ExecutorService executor) {
+        return executeParallel(executor);
     }
     
-    private Double computeDirectly() {
-        double sum = 0;
-        for (long n = start; n <= end; n++) {
-            sum += formula.calculate(n);
+    private Double executeParallel(ExecutorService executor) {
+        long totalElements = end - start + 1;
+        long numberOfTasks = Math.max(1, totalElements / threshold);
+        
+        List<CompletableFuture<Double>> futures = new ArrayList<>();
+
+        for (long i = 0; i < numberOfTasks; i++) {
+            long taskStart = start + i * threshold;
+            long taskEnd = Math.min(end, taskStart + threshold - 1);
+
+            CompletableFuture<Double> future = CompletableFuture.supplyAsync(() -> {
+                double sum = 0;
+                for (long n = taskStart; n <= taskEnd; n++) {
+                    sum += formula.calculate(n);
+                }
+                log.info("Start: {}, End: {}, Result: {}", taskStart, taskEnd, sum);
+                return sum;
+            }, executor);
+            
+            futures.add(future);
         }
-        log.info("Start: {}, End: {}, Result: {}", start, end, sum);
 
-        return sum;
-    }
-    
-    private Double splitAndCompute() {
-        long mid = (start + end) / 2;
-        
-        Task leftTask = new Task(start, mid, threshold, formula);
-        Task rightTask = new Task(mid + 1, end, threshold, formula);
-
-        leftTask.fork();
-        Double rightResult = rightTask.compute();
-        Double leftResult = leftTask.join();
-        
-        return leftResult + rightResult;
+        return futures.stream()
+                .map(CompletableFuture::join)
+                .mapToDouble(Double::doubleValue)
+                .sum();
     }
 }

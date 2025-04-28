@@ -3,7 +3,7 @@ package ru.shift;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Log4j2
@@ -26,32 +26,32 @@ public class Main {
     }
 
     private static void executeTask(Task task) {
-        ForkJoinPool forkJoinPool = null;
+        ExecutorService executor = null;
         
         try {
-            forkJoinPool = new ForkJoinPool(THREADS_AVAILABLE);
+            executor = Executors.newFixedThreadPool(THREADS_AVAILABLE);
             
             log.info("Starting calculations");
             long start = System.currentTimeMillis();
             
-            double result = forkJoinPool.invoke(task);
+            Double result = task.compute(executor);
             
             long executionTime = System.currentTimeMillis() - start;
             log.info("Result: {}, Total time: {} ms", result, executionTime);
         } finally {
-            shutdownPool(forkJoinPool);
+            shutdownPool(executor);
         }
     }
 
-    private static void shutdownPool(ExecutorService pool) {
-        if (pool != null) {
-            pool.shutdown();
+    private static void shutdownPool(ExecutorService executor) {
+        if (executor != null) {
+            executor.shutdown();
             try {
-                if (!pool.awaitTermination(10, TimeUnit.SECONDS)) {
-                    pool.shutdownNow();
+                if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
+                    executor.shutdownNow();
                 }
             } catch (InterruptedException e) {
-                pool.shutdownNow();
+                executor.shutdownNow();
                 Thread.currentThread().interrupt();
             }
         }
