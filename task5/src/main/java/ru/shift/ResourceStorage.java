@@ -2,16 +2,17 @@ package ru.shift;
 
 import lombok.extern.log4j.Log4j2;
 
-import java.util.LinkedList;
+import java.util.ArrayDeque;
 import java.util.Queue;
 
 @Log4j2
 public class ResourceStorage {
 
-    private final Queue<Resource> storage = new LinkedList<>();
+    private final Queue<Resource> storage;
     private final int maxSize;
 
     public ResourceStorage(int maxSize) {
+        this.storage = new ArrayDeque<>(maxSize);
         this.maxSize = maxSize;
     }
 
