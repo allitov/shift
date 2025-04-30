@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 @Log4j2
 public class Main {
@@ -18,18 +19,42 @@ public class Main {
             log.error("Произошла ошибка во время чтения конфигурации: ", ex);
             System.exit(1);
         }
-
         ResourceStorage storage = new ResourceStorage(config.storageSize());
 
-        createProducers(config, storage);
-        createConsumers(config, storage);
+        startThreads(config, storage);
 
+        waitForWorkCompletion(config.workTime());
+
+        shutdownThreads();
+
+        log.info("Все потоки успешно завершены");
+    }
+
+    private static void startThreads(AppConfig config, ResourceStorage storage) {
+        createWorkerThreads("Producer", config.producerCount(),
+                id -> new Producer(id, storage, config.producerTime()));
+        createWorkerThreads("Consumer", config.consumerCount(),
+                id -> new Consumer(id, storage, config.consumerTime()));
+    }
+
+    private static <T extends Runnable> void createWorkerThreads(String threadType, int count,
+                                                                 Function<Integer, T> workerFactory) {
+        for (int id = 1; id <= count; id++) {
+            Thread thread = new Thread(workerFactory.apply(id), threadType + "-" + id);
+            allThreads.add(thread);
+            thread.start();
+        }
+    }
+
+    private static void waitForWorkCompletion(long workTime) {
         try {
-            Thread.sleep(config.workTime());
+            Thread.sleep(workTime);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+    }
 
+    private static void shutdownThreads() {
         for (Thread thread : allThreads) {
             thread.interrupt();
         }
@@ -40,34 +65,6 @@ public class Main {
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
-        }
-
-        log.info("Все потоки успешно завершены");
-    }
-
-    private static void createProducers(AppConfig config, ResourceStorage storage) {
-        int producerIdCounter = 0;
-        for (int i = 0; i < config.producerCount(); i++) {
-            Thread thread = new Thread(new Producer(
-                    ++producerIdCounter,
-                    storage,
-                    config.producerTime()
-            ), "Producer-" + producerIdCounter);
-            allThreads.add(thread);
-            thread.start();
-        }
-    }
-
-    private static void createConsumers(AppConfig config, ResourceStorage storage) {
-        int consumerIdCounter = 0;
-        for (int i = 0; i < config.consumerCount(); i++) {
-            Thread thread = new Thread(new Consumer(
-                    ++consumerIdCounter,
-                    storage,
-                    config.consumerTime()
-            ), "Consumer-" + consumerIdCounter);
-            allThreads.add(thread);
-            thread.start();
         }
     }
 }
