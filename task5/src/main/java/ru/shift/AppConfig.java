@@ -39,6 +39,9 @@ public class AppConfig {
         } catch (IOException ex) {
             log.error("Ошибка во время чтения config.properties");
             System.exit(1);
+        } catch (NumberFormatException ex) {
+            log.error("Ошибка во время парсинга параметров", ex);
+            System.exit(1);
         }
     }
 }
