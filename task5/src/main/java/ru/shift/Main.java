@@ -8,8 +8,6 @@ import java.util.List;
 @Log4j2
 public class Main {
 
-    private static int producerIdCounter = 0;
-    private static int consumerIdCounter = 0;
     private static final AppConfig config = new AppConfig();
     private static final ResourceStorage storage = new ResourceStorage(config.getStorageSize());
     private static final List<Thread> allThreads = new ArrayList<>();
@@ -40,6 +38,7 @@ public class Main {
     }
 
     private static void createProducers() {
+        int producerIdCounter = 0;
         for (int i = 0; i < config.getProducerCount(); i++) {
             Thread thread = new Thread(new Producer(
                     ++producerIdCounter,
@@ -52,6 +51,7 @@ public class Main {
     }
 
     private static void createConsumers() {
+        int consumerIdCounter = 0;
         for (int i = 0; i < config.getConsumerCount(); i++) {
             Thread thread = new Thread(new Consumer(
                     ++consumerIdCounter,
