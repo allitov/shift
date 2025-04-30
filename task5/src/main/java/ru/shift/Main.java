@@ -11,20 +11,21 @@ public class Main {
     private static final List<Thread> allThreads = new ArrayList<>();
 
     public static void main(String[] args) {
-        var config = new AppConfig();
+        AppConfig config = null;
         try {
-            config = new AppConfig();
+            config = AppConfig.load();
         } catch (RuntimeException ex) {
+            log.error("Произошла ошибка во время чтения конфигурации: ", ex);
             System.exit(1);
         }
 
-        var storage = new ResourceStorage(config.getStorageSize());
+        ResourceStorage storage = new ResourceStorage(config.storageSize());
 
         createProducers(config, storage);
         createConsumers(config, storage);
 
         try {
-            Thread.sleep(config.getWorkTime());
+            Thread.sleep(config.workTime());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -46,11 +47,11 @@ public class Main {
 
     private static void createProducers(AppConfig config, ResourceStorage storage) {
         int producerIdCounter = 0;
-        for (int i = 0; i < config.getProducerCount(); i++) {
+        for (int i = 0; i < config.producerCount(); i++) {
             Thread thread = new Thread(new Producer(
                     ++producerIdCounter,
                     storage,
-                    config.getProducerTime()
+                    config.producerTime()
             ), "Producer-" + producerIdCounter);
             allThreads.add(thread);
             thread.start();
@@ -59,11 +60,11 @@ public class Main {
 
     private static void createConsumers(AppConfig config, ResourceStorage storage) {
         int consumerIdCounter = 0;
-        for (int i = 0; i < config.getConsumerCount(); i++) {
+        for (int i = 0; i < config.consumerCount(); i++) {
             Thread thread = new Thread(new Consumer(
                     ++consumerIdCounter,
                     storage,
-                    config.getConsumerTime()
+                    config.consumerTime()
             ), "Consumer-" + consumerIdCounter);
             allThreads.add(thread);
             thread.start();
