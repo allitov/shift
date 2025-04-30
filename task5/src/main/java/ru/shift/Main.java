@@ -8,13 +8,20 @@ import java.util.List;
 @Log4j2
 public class Main {
 
-    private static final AppConfig config = new AppConfig();
-    private static final ResourceStorage storage = new ResourceStorage(config.getStorageSize());
     private static final List<Thread> allThreads = new ArrayList<>();
 
     public static void main(String[] args) {
-        createProducers();
-        createConsumers();
+        var config = new AppConfig();
+        try {
+            config = new AppConfig();
+        } catch (RuntimeException ex) {
+            System.exit(1);
+        }
+
+        var storage = new ResourceStorage(config.getStorageSize());
+
+        createProducers(config, storage);
+        createConsumers(config, storage);
 
         try {
             Thread.sleep(config.getWorkTime());
@@ -37,7 +44,7 @@ public class Main {
         log.info("Все потоки успешно завершены");
     }
 
-    private static void createProducers() {
+    private static void createProducers(AppConfig config, ResourceStorage storage) {
         int producerIdCounter = 0;
         for (int i = 0; i < config.getProducerCount(); i++) {
             Thread thread = new Thread(new Producer(
@@ -50,7 +57,7 @@ public class Main {
         }
     }
 
-    private static void createConsumers() {
+    private static void createConsumers(AppConfig config, ResourceStorage storage) {
         int consumerIdCounter = 0;
         for (int i = 0; i < config.getConsumerCount(); i++) {
             Thread thread = new Thread(new Consumer(
