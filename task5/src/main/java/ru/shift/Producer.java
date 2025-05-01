@@ -34,14 +34,12 @@ public class Producer implements Runnable {
     }
     
     private Resource createResource() {
-        int resourceId = getCurrentResourceId();
-        Resource resource = new Resource(resourceId);
+        Resource resource;
+        synchronized (Producer.class) {
+            resource = new Resource(++resourceCounter);
+        }
         log.info("Производитель {} произвел ресурс {}", id, resource.id());
 
         return resource;
-    }
-
-    private synchronized int getCurrentResourceId() {
-        return ++resourceCounter;
     }
 }
