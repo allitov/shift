@@ -19,9 +19,9 @@ public class Producer implements Runnable {
             while (!Thread.currentThread().isInterrupted()) {
                 Resource resource = createResource();
                 try {
-                    int resourcesAmount = storage.put(resource, id);
+                    int storageSize = storage.put(resource, id);
                     log.info("Производитель {} доставил ресурс {}. Ресурсов на складе: {}",
-                            id, resource.id(), resourcesAmount);
+                            id, resource.id(), storageSize);
                     Thread.sleep(producerTime);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();

@@ -9,8 +9,6 @@ import java.util.function.Function;
 @Log4j2
 public class Main {
 
-    private static final List<Thread> allThreads = new ArrayList<>();
-
     public static void main(String[] args) {
         AppConfig config = null;
         try {
@@ -20,30 +18,34 @@ public class Main {
             System.exit(1);
         }
         ResourceStorage storage = new ResourceStorage(config.storageSize());
+        List<Thread> workers = new ArrayList<>(config.consumerCount() + config.producerCount());
 
-        startThreads(config, storage);
+        startWorkers(config, storage, workers);
 
         waitForWorkCompletion(config.workTime());
 
-        shutdownThreads();
+        shutdownWorkers(workers);
 
         log.info("Все потоки успешно завершены");
     }
 
-    private static void startThreads(AppConfig config, ResourceStorage storage) {
-        createWorkerThreads("Producer", config.producerCount(),
-                id -> new Producer(id, storage, config.producerTime()));
-        createWorkerThreads("Consumer", config.consumerCount(),
-                id -> new Consumer(id, storage, config.consumerTime()));
+    private static void startWorkers(AppConfig config, ResourceStorage storage, List<Thread> workers) {
+        workers.addAll(createWorkerThreads("Producer", config.producerCount(),
+                id -> new Producer(id, storage, config.producerTime())));
+        workers.addAll(createWorkerThreads("Consumer", config.consumerCount(),
+                id -> new Consumer(id, storage, config.consumerTime())));
     }
 
-    private static <T extends Runnable> void createWorkerThreads(String threadType, int count,
-                                                                 Function<Integer, T> workerFactory) {
+    private static <T extends Runnable> List<Thread> createWorkerThreads(String workerType, int count,
+                                                                         Function<Integer, T> workerFactory) {
+        List<Thread> workers = new ArrayList<>(count);
         for (int id = 1; id <= count; id++) {
-            Thread thread = new Thread(workerFactory.apply(id), threadType + "-" + id);
-            allThreads.add(thread);
-            thread.start();
+            Thread worker = new Thread(workerFactory.apply(id), workerType + "-" + id);
+            workers.add(worker);
+            worker.start();
         }
+
+        return workers;
     }
 
     private static void waitForWorkCompletion(long workTime) {
@@ -54,14 +56,14 @@ public class Main {
         }
     }
 
-    private static void shutdownThreads() {
-        for (Thread thread : allThreads) {
-            thread.interrupt();
+    private static void shutdownWorkers(List<Thread> workers) {
+        for (Thread worker : workers) {
+            worker.interrupt();
         }
 
-        for (Thread thread : allThreads) {
+        for (Thread worker : workers) {
             try {
-                thread.join(1000);
+                worker.join(1000);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
