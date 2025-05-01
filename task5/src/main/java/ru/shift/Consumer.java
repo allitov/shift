@@ -17,7 +17,7 @@ public class Consumer implements Runnable {
             while (!Thread.currentThread().isInterrupted()) {
                 try {
                     Resource resource = storage.take(id);
-                    log.info("Потребитель {} потребил ресурс {}", id, resource.id());
+                    log.info("Потребитель {} забрал ресурс {}", id, resource.id());
                     Thread.sleep(consumerTime);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();

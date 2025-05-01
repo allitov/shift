@@ -16,24 +16,24 @@ public class ResourceStorage {
         this.maxSize = maxSize;
     }
 
-    public synchronized void put(Resource resource, int producerId) throws InterruptedException {
+    public synchronized int put(Resource resource, int producerId) throws InterruptedException {
         while (storage.size() == maxSize) {
-            log.info("Производитель {} ожидает: склад полон", producerId);
+            log.debug("Производитель {} ожидает: склад полон", producerId);
             wait();
         }
         storage.offer(resource);
-        log.info("Производитель {} доставил ресурс {}. Ресурсов на складе: {}",
-                producerId, resource.id(), storage.size());
         notifyAll();
+
+        return storage.size();
     }
 
     public synchronized Resource take(int consumerId) throws InterruptedException {
         while (storage.isEmpty()) {
-            log.info("Потребитель {} ожидает: склад пуст", consumerId);
+            log.debug("Потребитель {} ожидает: склад пуст", consumerId);
             wait();
         }
         Resource resource = storage.poll();
-        log.info("Потребитель {} забрал ресурс {}. Ресурсов на складе: {}",
+        log.debug("Потребитель {} забрал ресурс {}. Ресурсов на складе: {}",
                 consumerId, resource.id(), storage.size());
         notifyAll();
 

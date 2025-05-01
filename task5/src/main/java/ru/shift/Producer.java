@@ -19,7 +19,9 @@ public class Producer implements Runnable {
             while (!Thread.currentThread().isInterrupted()) {
                 Resource resource = createResource();
                 try {
-                    storage.put(resource, id);
+                    int resourcesAmount = storage.put(resource, id);
+                    log.info("Производитель {} доставил ресурс {}. Ресурсов на складе: {}",
+                            id, resource.id(), resourcesAmount);
                     Thread.sleep(producerTime);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
@@ -31,10 +33,15 @@ public class Producer implements Runnable {
         }
     }
     
-    private synchronized Resource createResource() {
-        Resource resource = new Resource(++resourceCounter);
+    private Resource createResource() {
+        int resourceId = getCurrentResourceId();
+        Resource resource = new Resource(resourceId);
         log.info("Производитель {} произвел ресурс {}", id, resource.id());
 
         return resource;
+    }
+
+    private synchronized int getCurrentResourceId() {
+        return ++resourceCounter;
     }
 }
