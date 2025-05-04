@@ -1,24 +1,21 @@
-plugins {
-    id 'java'
-}
+subprojects {
+    apply plugin: 'java'
 
-group = 'ru.shift'
-version = '1.0-SNAPSHOT'
+    group   = 'ru.shift'
+    version = '1.0-SNAPSHOT'
 
-repositories {
-    mavenCentral()
-}
+    repositories {
+        mavenCentral()
+    }
 
-dependencies {
-    compileOnly "org.projectlombok:lombok:1.18.38"
-    annotationProcessor "org.projectlombok:lombok:1.18.38"
-    implementation 'org.apache.logging.log4j:log4j-core:2.24.3'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.3'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.19.0'
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-}
+    dependencies {
+        compileOnly "org.projectlombok:lombok:1.18.38"
+        annotationProcessor "org.projectlombok:lombok:1.18.38"
+        testImplementation platform('org.junit:junit-bom:5.10.0')
+        testImplementation 'org.junit.jupiter:junit-jupiter'
+    }
 
-test {
-    useJUnitPlatform()
+    test {
+        useJUnitPlatform()
+    }
 }

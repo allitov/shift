@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+dependencies {
+    implementation project(':common')
+    implementation 'org.apache.logging.log4j:log4j-core:2.24.3'
+}
+
+application {
+    mainClass = 'ru.shift.client.ClientMain'
+}
+
+jar {
+    dependsOn project(':common').tasks.named('jar')
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    manifest {
+        attributes(
+                'Main-Class': 'ru.shift.client.ClientMain'
+        )
+    }
+
+    from {
+        configurations.runtimeClasspath.collect {it.isDirectory() ? it : zipTree(it)}
+    }
+}

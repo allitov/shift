@@ -21,7 +21,7 @@ public class ClientHandler implements Runnable, AutoCloseable {
     private final ChatServer server;
     private BufferedReader in;
     private PrintWriter out;
-    
+
     private String username;
     private boolean registered = false;
 
@@ -35,11 +35,11 @@ public class ClientHandler implements Runnable, AutoCloseable {
         try {
             in = createReader();
             out = createWriter();
-            
+
             if (!processJoinRequest()) {
                 return;
             }
-            
+
             processMessageLoop();
         } catch (IOException e) {
             log.error("Соединение пользователя {} было закрыто, так как произошла ошибка", username, e);
@@ -54,12 +54,12 @@ public class ClientHandler implements Runnable, AutoCloseable {
         return new BufferedReader(
                 new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
     }
-    
+
     private PrintWriter createWriter() throws IOException {
         return new PrintWriter(
                 new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
     }
-    
+
     private boolean processJoinRequest() throws IOException {
         ChatMessage join = JsonUtil.fromJson(in.readLine());
 
@@ -79,23 +79,23 @@ public class ClientHandler implements Runnable, AutoCloseable {
         notifyUserJoined();
         return true;
     }
-    
+
     private void notifyUserJoined() {
         server.broadcast(new ChatMessage(
-                MessageType.JOIN, 
+                MessageType.JOIN,
                 null,
                 "Пользователь " + username + " присоединился",
                 LocalDateTime.now()));
         server.broadcastUserList();
     }
-    
+
     private void processMessageLoop() throws IOException {
         String line;
         while ((line = in.readLine()) != null) {
             processMessage(line);
         }
     }
-    
+
     private void processMessage(String jsonMessage) throws IOException {
         ChatMessage msg = JsonUtil.fromJson(jsonMessage);
         if (msg.getType() == MessageType.TEXT) {

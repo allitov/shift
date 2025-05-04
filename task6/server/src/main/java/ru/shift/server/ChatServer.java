@@ -33,12 +33,12 @@ public class ChatServer implements AutoCloseable {
     public void start() throws IOException {
         serverSocket = new ServerSocket(port);
         isRunning = true;
-        
+
         log.info("Чат-сервер запущен на порту {}", port);
-        
+
         acceptClientsLoop();
     }
-    
+
     private void acceptClientsLoop() throws IOException {
         try {
             while (isRunning) {
@@ -52,7 +52,7 @@ public class ChatServer implements AutoCloseable {
             }
         }
     }
-    
+
     private void handleNewClient(Socket clientSocket) {
         ClientHandler handler = new ClientHandler(clientSocket, this);
         clientThreadPool.execute(handler);
@@ -62,15 +62,15 @@ public class ChatServer implements AutoCloseable {
         if (username == null || username.trim().isEmpty()) {
             return false;
         }
-        
+
         boolean result = clients.putIfAbsent(username, handler) == null;
-        
+
         if (result) {
             log.debug("Пользователь {} зарегистрирован", username);
         } else {
             log.debug("Не удалось зарегистрировать пользователя {}: имя занято", username);
         }
-        
+
         return result;
     }
 
@@ -78,15 +78,15 @@ public class ChatServer implements AutoCloseable {
         if (username == null) {
             return;
         }
-        
+
         ClientHandler removed = clients.remove(username);
-        
+
         if (removed != null) {
             log.debug("Пользователь {} покинул чат", username);
             notifyUserLeft(username);
         }
     }
-    
+
     private void notifyUserLeft(String username) {
         broadcast(createSystemMessage(
                 MessageType.LEAVE,
@@ -98,7 +98,7 @@ public class ChatServer implements AutoCloseable {
         if (message == null) {
             return;
         }
-        
+
         try {
             String json = JsonUtil.toJson(message);
             broadcastRaw(json);
@@ -106,7 +106,7 @@ public class ChatServer implements AutoCloseable {
             log.error("Ошибка сериализации сообщения", e);
         }
     }
-    
+
     private void broadcastRaw(String json) {
         for (ClientHandler handler : clients.values()) {
             handler.sendRaw(json);
@@ -115,17 +115,17 @@ public class ChatServer implements AutoCloseable {
 
     public void broadcastUserList() {
         Set<String> usernames = Collections.unmodifiableSet(clients.keySet());
-        
+
         ChatMessage listMessage = new ChatMessage(
                 MessageType.USER_LIST,
                 null,
                 String.join(",", usernames),
                 LocalDateTime.now()
         );
-        
+
         broadcast(listMessage);
     }
-    
+
     private static ChatMessage createSystemMessage(MessageType type, String content) {
         return new ChatMessage(type, null, content, LocalDateTime.now());
     }
