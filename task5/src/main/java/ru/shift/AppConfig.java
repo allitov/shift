@@ -50,14 +50,14 @@ public record AppConfig(int producerCount, int consumerCount, long producerTime,
 
     private static <T extends Number> T parseNumberParam(Properties props, String key, T defaultValue,
                                                          Function<String, T> parser) {
-        return Optional.ofNullable(props.getProperty(key))
-                .map(value -> {
-                    try {
-                        return parser.apply(value);
-                    } catch (NumberFormatException e) {
-                        throw new IllegalArgumentException("Parameter " + key + " has wrong value: " + value);
-                    }
-                })
-                .orElse(defaultValue);
+        String value = props.getProperty(key);
+        if (value == null) {
+            return defaultValue;
+        }
+        try {
+            return parser.apply(value);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Parameter " + key + " has wrong value: " + value);
+        }
     }
 }
