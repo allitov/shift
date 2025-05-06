@@ -18,9 +18,7 @@ public class Main {
             System.exit(1);
         }
         ResourceStorage storage = new ResourceStorage(config.storageSize());
-        List<Thread> workers = new ArrayList<>(config.consumerCount() + config.producerCount());
-
-        startWorkers(config, storage, workers);
+        List<Thread> workers = startWorkers(config, storage);
 
         waitForWorkCompletion(config.workTime());
 
@@ -29,23 +27,24 @@ public class Main {
         log.info("Все потоки успешно завершены");
     }
 
-    private static void startWorkers(AppConfig config, ResourceStorage storage, List<Thread> workers) {
-        workers.addAll(createWorkerThreads("Producer", config.producerCount(),
-                id -> new Producer(id, storage, config.producerTime())));
-        workers.addAll(createWorkerThreads("Consumer", config.consumerCount(),
-                id -> new Consumer(id, storage, config.consumerTime())));
+    private static List<Thread> startWorkers(AppConfig config, ResourceStorage storage) {
+        List<Thread> workers = new ArrayList<>(config.consumerCount() + config.producerCount());
+        createWorkerThreads("Producer", config.producerCount(),
+                id -> new Producer(id, storage, config.producerTime()), workers);
+        createWorkerThreads("Consumer", config.consumerCount(),
+                id -> new Consumer(id, storage, config.consumerTime()), workers);
+
+        return workers;
     }
 
-    private static <T extends Runnable> List<Thread> createWorkerThreads(String workerType, int count,
-                                                                         Function<Integer, T> workerFactory) {
-        List<Thread> workers = new ArrayList<>(count);
+    private static <T extends Runnable> void createWorkerThreads(String workerType, int count,
+                                                                         Function<Integer, T> workerFactory,
+                                                                         List<Thread> workers) {
         for (int id = 1; id <= count; id++) {
             Thread worker = new Thread(workerFactory.apply(id), workerType + "-" + id);
             workers.add(worker);
             worker.start();
         }
-
-        return workers;
     }
 
     private static void waitForWorkCompletion(long workTime) {
