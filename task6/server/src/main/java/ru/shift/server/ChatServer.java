@@ -39,23 +39,17 @@ public class ChatServer implements AutoCloseable {
         acceptClientsLoop();
     }
 
-    private void acceptClientsLoop() throws IOException {
-        try {
-            while (isRunning) {
-                Socket clientSocket = serverSocket.accept();
-                log.debug("Новое подключение: {}", clientSocket.getInetAddress());
-                handleNewClient(clientSocket);
-            }
-        } catch (IOException e) {
-            if (isRunning) {
-                throw e;
-            }
-        }
-    }
+    public void broadcastUserList() {
+        Set<String> usernames = Collections.unmodifiableSet(clients.keySet());
 
-    private void handleNewClient(Socket clientSocket) {
-        ClientHandler handler = new ClientHandler(clientSocket, this);
-        clientThreadPool.execute(handler);
+        ChatMessage listMessage = new ChatMessage(
+                MessageType.USER_LIST,
+                null,
+                String.join(",", usernames),
+                LocalDateTime.now()
+        );
+
+        broadcast(listMessage);
     }
 
     public boolean registerClient(String username, ClientHandler handler) {
@@ -87,13 +81,6 @@ public class ChatServer implements AutoCloseable {
         }
     }
 
-    private void notifyUserLeft(String username) {
-        broadcast(createSystemMessage(
-                MessageType.LEAVE,
-                "Пользователь " + username + " покинул чат"));
-        broadcastUserList();
-    }
-
     public void broadcast(ChatMessage message) {
         if (message == null) {
             return;
@@ -107,33 +94,46 @@ public class ChatServer implements AutoCloseable {
         }
     }
 
+    @Override
+    public void close() {
+        stop();
+        log.info("Чат-сервер остановлен");
+    }
+
+    private void acceptClientsLoop() throws IOException {
+        try {
+            while (isRunning) {
+                Socket clientSocket = serverSocket.accept();
+                log.debug("Новое подключение: {}", clientSocket.getInetAddress());
+                handleNewClient(clientSocket);
+            }
+        } catch (IOException e) {
+            if (isRunning) {
+                throw e;
+            }
+        }
+    }
+
+    private void handleNewClient(Socket clientSocket) {
+        ClientHandler handler = new ClientHandler(clientSocket, this);
+        clientThreadPool.execute(handler);
+    }
+
+    private void notifyUserLeft(String username) {
+        broadcast(createSystemMessage(
+                MessageType.LEAVE,
+                "Пользователь " + username + " покинул чат"));
+        broadcastUserList();
+    }
+
     private void broadcastRaw(String json) {
         for (ClientHandler handler : clients.values()) {
             handler.sendRaw(json);
         }
     }
 
-    public void broadcastUserList() {
-        Set<String> usernames = Collections.unmodifiableSet(clients.keySet());
-
-        ChatMessage listMessage = new ChatMessage(
-                MessageType.USER_LIST,
-                null,
-                String.join(",", usernames),
-                LocalDateTime.now()
-        );
-
-        broadcast(listMessage);
-    }
-
     private static ChatMessage createSystemMessage(MessageType type, String content) {
         return new ChatMessage(type, null, content, LocalDateTime.now());
-    }
-
-    @Override
-    public void close() {
-        stop();
-        log.info("Чат-сервер остановлен");
     }
 
     private void stop() {
