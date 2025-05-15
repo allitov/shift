@@ -28,12 +28,7 @@ public class ChatServer implements AutoCloseable {
     private volatile boolean isRunning = false;
 
     public ChatServer(int port) {
-        if (isPortValid(port)) {
-            this.port = port;
-            log.warn("Invalid port {}. Started on default port {}", port, DEFAULT_PORT);
-        } else {
-            this.port = 9000;
-        }
+        this.port = setupPort(port);
         this.clientThreadPool = Executors.newCachedThreadPool();
     }
 
@@ -105,6 +100,15 @@ public class ChatServer implements AutoCloseable {
     public void close() {
         stop();
         log.info("Чат-сервер остановлен");
+    }
+
+    private int setupPort(int port) {
+        if (isPortValid(port)) {
+            log.warn("Неверный порт {}. Сервер использует порт по умолчанию {}", port, DEFAULT_PORT);
+            return DEFAULT_PORT;
+        }
+
+        return port;
     }
 
     private void acceptClientsLoop() throws IOException {
