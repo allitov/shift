@@ -19,6 +19,8 @@ import java.util.concurrent.Executors;
 @Log4j2
 public class ChatServer implements AutoCloseable {
 
+    private static final int DEFAULT_PORT = 9000;
+
     private final int port;
     private final Map<String, ClientHandler> clients = new ConcurrentHashMap<>();
     private final ExecutorService clientThreadPool;
@@ -26,7 +28,12 @@ public class ChatServer implements AutoCloseable {
     private volatile boolean isRunning = false;
 
     public ChatServer(int port) {
-        this.port = port;
+        if (isPortValid(port)) {
+            this.port = port;
+            log.warn("Invalid port {}. Started on default port {}", port, DEFAULT_PORT);
+        } else {
+            this.port = 9000;
+        }
         this.clientThreadPool = Executors.newCachedThreadPool();
     }
 
@@ -53,7 +60,7 @@ public class ChatServer implements AutoCloseable {
     }
 
     public boolean registerClient(String username, ClientHandler handler) {
-        if (username == null || username.trim().isEmpty()) {
+        if (!isNameValid(username)) {
             return false;
         }
 
@@ -148,5 +155,13 @@ public class ChatServer implements AutoCloseable {
         }
 
         clientThreadPool.shutdownNow();
+    }
+
+    private boolean isPortValid(int port) {
+        return port > 0 && port <= 65535;
+    }
+
+    private boolean isNameValid(String username) {
+        return username != null && !username.isBlank();
     }
 }
