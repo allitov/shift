@@ -32,9 +32,9 @@ public class ClientHandler implements Runnable, AutoCloseable {
 
     @Override
     public void run() {
-        try {
-            in = createReader();
-            out = createWriter();
+        try (this.socket; var in = createReader(); var out = createWriter()) {
+            this.in = in;
+            this.out = out;
 
             if (!processJoinRequest()) {
                 return;
@@ -61,6 +61,12 @@ public class ClientHandler implements Runnable, AutoCloseable {
     @Override
     public void close() {
         try {
+            if (in != null) {
+                in.close();
+            }
+            if (out != null) {
+                out.close();
+            }
             if (socket != null && !socket.isClosed()) {
                 socket.close();
             }
@@ -133,7 +139,6 @@ public class ClientHandler implements Runnable, AutoCloseable {
     }
 
     private void cleanup() {
-        close();
         if (registered) {
             server.unregisterClient(username);
         }
