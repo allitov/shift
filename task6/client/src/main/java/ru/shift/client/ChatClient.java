@@ -69,6 +69,16 @@ public class ChatClient implements AutoCloseable {
         sendMessage(msg);
     }
 
+    @Override
+    public void close() {
+        try {
+            socket.close();
+        } catch (IOException e) {
+            log.warn("Произошла ошибка во время закрытия соединения", e);
+        }
+        pool.shutdownNow();
+    }
+
     private void sendMessage(ChatMessage msg) {
         try {
             out.println(JsonUtil.toJson(msg));
@@ -87,15 +97,5 @@ public class ChatClient implements AutoCloseable {
         } catch (IOException e) {
             log.warn("Произошла ошибка во время чтения данных", e);
         }
-    }
-
-    @Override
-    public void close() {
-        try {
-            socket.close();
-        } catch (IOException e) {
-            log.warn("Произошла ошибка во время закрытия соединения", e);
-        }
-        pool.shutdownNow();
     }
 }

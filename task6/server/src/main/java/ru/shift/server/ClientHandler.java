@@ -50,6 +50,25 @@ public class ClientHandler implements Runnable, AutoCloseable {
         }
     }
 
+    public void sendRaw(String json) {
+        try {
+            out.println(json);
+        } catch (Exception e) {
+            log.warn("Пользователь {} не смог отправить сообщение", username);
+        }
+    }
+
+    @Override
+    public void close() {
+        try {
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+            }
+        } catch (IOException e) {
+            log.warn("Произошла ошибка во время закрытия соединения", e);
+        }
+    }
+
     private BufferedReader createReader() throws IOException {
         return new BufferedReader(
                 new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
@@ -104,14 +123,6 @@ public class ClientHandler implements Runnable, AutoCloseable {
         }
     }
 
-    public void sendRaw(String json) {
-        try {
-            out.println(json);
-        } catch (Exception e) {
-            log.warn("Пользователь {} не смог отправить сообщение", username);
-        }
-    }
-
     private void sendAndClose(ChatMessage msg) throws IOException {
         sendRaw(JsonUtil.toJson(msg));
         close();
@@ -125,17 +136,6 @@ public class ClientHandler implements Runnable, AutoCloseable {
         close();
         if (registered) {
             server.unregisterClient(username);
-        }
-    }
-
-    @Override
-    public void close() {
-        try {
-            if (socket != null && !socket.isClosed()) {
-                socket.close();
-            }
-        } catch (IOException e) {
-            log.warn("Произошла ошибка во время закрытия соединения", e);
         }
     }
 }
