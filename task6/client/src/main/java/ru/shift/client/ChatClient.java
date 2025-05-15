@@ -84,6 +84,12 @@ public class ChatClient implements AutoCloseable {
             out.println(JsonUtil.toJson(msg));
         } catch (IOException e) {
             log.warn("Ошибка отправки сообщения", e);
+            ChatMessage errorMsg = new ChatMessage(
+                    MessageType.ERROR, 
+                    null, 
+                    "Ошибка отправки сообщения. Попробуйте переподключиться",
+                    LocalDateTime.now());
+            messageConsumer.accept(errorMsg);
         }
     }
 
@@ -96,6 +102,12 @@ public class ChatClient implements AutoCloseable {
             }
         } catch (IOException e) {
             log.warn("Произошла ошибка во время чтения данных", e);
+            ChatMessage errorMsg = new ChatMessage(
+                    MessageType.ERROR, 
+                    null, 
+                    "Ошибка получения новых сообщений. Попробуйте переподключиться",
+                    LocalDateTime.now());
+            messageConsumer.accept(errorMsg);
         }
     }
 }
