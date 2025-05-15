@@ -111,7 +111,7 @@ public class ChatServer implements AutoCloseable {
         return port;
     }
 
-    private void acceptClientsLoop() throws IOException {
+    private void acceptClientsLoop() {
         try {
             while (isRunning) {
                 Socket clientSocket = serverSocket.accept();
@@ -120,7 +120,7 @@ public class ChatServer implements AutoCloseable {
             }
         } catch (IOException e) {
             if (isRunning) {
-                throw e;
+                log.error("Не получилось установить новое подключение", e);
             }
         }
     }
