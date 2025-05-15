@@ -103,7 +103,7 @@ public class ChatServer implements AutoCloseable {
     }
 
     private int setupPort(int port) {
-        if (isPortValid(port)) {
+        if (!isPortValid(port)) {
             log.warn("Неверный порт {}. Сервер использует порт по умолчанию {}", port, DEFAULT_PORT);
             return DEFAULT_PORT;
         }
