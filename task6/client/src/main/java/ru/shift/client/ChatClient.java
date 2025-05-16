@@ -39,10 +39,8 @@ public class ChatClient implements AutoCloseable {
         this.username = username;
         try {
             socket = new Socket(host, port);
-            in = new BufferedReader(
-                    new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
-            out = new PrintWriter(
-                    new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
+            in = createReader(socket);
+            out = createWriter(socket);
 
             ChatMessage join = new ChatMessage(
                     MessageType.JOIN, username, null, LocalDateTime.now());
@@ -79,17 +77,22 @@ public class ChatClient implements AutoCloseable {
         pool.shutdownNow();
     }
 
+    private BufferedReader createReader(Socket socket) throws IOException {
+        return new BufferedReader(
+                new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+    }
+
+    private PrintWriter createWriter(Socket socket) throws IOException {
+        return new PrintWriter(
+                new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
+    }
+
     private void sendMessage(ChatMessage msg) {
         try {
             out.println(JsonUtil.toJson(msg));
         } catch (IOException e) {
             log.warn("Ошибка отправки сообщения", e);
-            ChatMessage errorMsg = new ChatMessage(
-                    MessageType.ERROR, 
-                    null, 
-                    "Ошибка отправки сообщения. Попробуйте переподключиться",
-                    LocalDateTime.now());
-            messageConsumer.accept(errorMsg);
+            showError("Ошибка отправки сообщения. Попробуйте переподключиться");
         }
     }
 
@@ -102,12 +105,16 @@ public class ChatClient implements AutoCloseable {
             }
         } catch (IOException e) {
             log.warn("Произошла ошибка во время чтения данных", e);
-            ChatMessage errorMsg = new ChatMessage(
-                    MessageType.ERROR, 
-                    null, 
-                    "Ошибка получения новых сообщений. Попробуйте переподключиться",
-                    LocalDateTime.now());
-            messageConsumer.accept(errorMsg);
+            showError("Ошибка получения новых сообщений. Попробуйте переподключиться");
         }
+    }
+
+    private void showError(String content) {
+        ChatMessage errorMsg = new ChatMessage(
+                MessageType.ERROR,
+                null,
+                content,
+                LocalDateTime.now());
+        messageConsumer.accept(errorMsg);
     }
 }
