@@ -114,10 +114,14 @@ public class ClientHandler implements Runnable, AutoCloseable {
         server.broadcastUserList();
     }
 
-    private void processMessageLoop() throws IOException {
+    private void processMessageLoop() {
         String line;
-        while ((line = in.readLine()) != null) {
-            processMessage(line);
+        try {
+            while ((line = in.readLine()) != null) {
+                processMessage(line);
+            }
+        } catch (IOException e) {
+            log.error("Произошла ошибка во время обработки сообщения", e);
         }
     }
 
