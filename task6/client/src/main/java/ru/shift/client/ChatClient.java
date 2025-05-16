@@ -14,6 +14,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -37,25 +39,37 @@ public class ChatClient implements AutoCloseable {
 
     public boolean connect(String host, int port, String username) {
         this.username = username;
-        try {
-            socket = new Socket(host, port);
-            in = createReader(socket);
-            out = createWriter(socket);
 
-            ChatMessage join = new ChatMessage(
-                    MessageType.JOIN, username, null, LocalDateTime.now());
-            sendMessage(join);
+        CompletableFuture<Boolean> connectionResult = new CompletableFuture<>();
 
-            ChatMessage response = JsonUtil.fromJson(in.readLine());
-            messageConsumer.accept(response);
-            if (response.getType() == MessageType.ERROR) {
-                close();
-                return false;
+        pool.submit(() -> {
+            try (var socket = new Socket(host, port); var in = createReader(socket); var out = createWriter(socket)) {
+                this.socket = socket;
+                this.in = in;
+                this.out = out;
+
+                ChatMessage join = new ChatMessage(
+                        MessageType.JOIN, username, null, LocalDateTime.now());
+                sendMessage(join);
+
+                ChatMessage response = JsonUtil.fromJson(in.readLine());
+                messageConsumer.accept(response);
+                if (response.getType() == MessageType.ERROR) {
+                    connectionResult.complete(false);
+                    return;
+                }
+                connectionResult.complete(true);
+
+                readLoop();
+            } catch (IOException e) {
+                log.error("Не удалось подключиться", e);
+                connectionResult.completeExceptionally(e);
             }
+        });
 
-            pool.submit(this::readLoop);
-            return true;
-        } catch (IOException e) {
+        try {
+            return connectionResult.get();
+        } catch (InterruptedException | ExecutionException e) {
             log.error("Не удалось подключиться", e);
             return false;
         }
@@ -70,7 +84,9 @@ public class ChatClient implements AutoCloseable {
     @Override
     public void close() {
         try {
-            socket.close();
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+            }
         } catch (IOException e) {
             log.warn("Произошла ошибка во время закрытия соединения", e);
         }
